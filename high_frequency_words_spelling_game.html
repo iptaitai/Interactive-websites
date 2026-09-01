@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Frequency Words Spelling Quest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f0fdf4;
+        }
+        .pop-anim {
+            animation: pop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-emerald-600 text-white shadow-lg p-4">
+        <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-yellow-400 text-emerald-900 p-2 rounded-2xl text-2xl shadow">
+                    <i class="fa-solid fa-spell-check"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-wide">HFW Spelling Quest</h1>
+                    <p class="text-emerald-100 text-xs">Term 3 High Frequency Words Practice</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 bg-emerald-700/60 px-4 py-2 rounded-xl text-sm font-semibold">
+                <div class="flex items-center gap-1.5 text-yellow-300">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="score">0</span>
+                </div>
+                <div class="h-4 w-px bg-emerald-500"></div>
+                <div class="flex items-center gap-1.5 text-orange-300">
+                    <i class="fa-solid fa-fire"></i>
+                    <span id="streak">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-3xl mx-auto w-full p-4 flex-grow flex flex-col justify-center">
+
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="bg-white rounded-3xl shadow-xl p-6 md:p-8 space-y-6 border-4 border-emerald-100">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl font-bold text-emerald-800">Select Your Practice Set</h2>
+                <p class="text-slate-500 text-sm">Choose a spelling week or practice all words together!</p>
+            </div>
+
+            <!-- Week Selection -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <button onclick="selectWeek('all')" class="week-btn bg-emerald-500 text-white font-bold p-3 rounded-2xl shadow hover:bg-emerald-600 transition border-b-4 border-emerald-700 flex flex-col items-center gap-1 active:translate-y-0.5">
+                    <span class="text-xs uppercase opacity-80">All Lists</span>
+                    <span class="text-lg">40 Words</span>
+                </button>
+                <button onclick="selectWeek(1)" class="week-btn bg-white border-2 border-emerald-300 hover:border-emerald-500 text-emerald-800 font-bold p-3 rounded-2xl shadow-sm transition flex flex-col items-center gap-1">
+                    <span class="text-xs text-slate-400">Week 3</span>
+                    <span class="text-base">List 1</span>
+                </button>
+                <button onclick="selectWeek(2)" class="week-btn bg-white border-2 border-emerald-300 hover:border-emerald-500 text-emerald-800 font-bold p-3 rounded-2xl shadow-sm transition flex flex-col items-center gap-1">
+                    <span class="text-xs text-slate-400">Week 5</span>
+                    <span class="text-base">List 2</span>
+                </button>
+                <button onclick="selectWeek(3)" class="week-btn bg-white border-2 border-emerald-300 hover:border-emerald-500 text-emerald-800 font-bold p-3 rounded-2xl shadow-sm transition flex flex-col items-center gap-1">
+                    <span class="text-xs text-slate-400">Week 7</span>
+                    <span class="text-base">List 3</span>
+                </button>
+                <button onclick="selectWeek(4)" class="week-btn bg-white border-2 border-emerald-300 hover:border-emerald-500 text-emerald-800 font-bold p-3 rounded-2xl shadow-sm transition flex flex-col items-center gap-1">
+                    <span class="text-xs text-slate-400">Week 9</span>
+                    <span class="text-base">List 4</span>
+                </button>
+            </div>
+
+            <!-- Mode Selection -->
+            <div class="space-y-3 pt-2">
+                <h3 class="text-lg font-bold text-slate-700">Choose Activity Mode:</h3>
+                <div class="grid md:grid-cols-3 gap-3">
+                    <button onclick="startActivity('spelling')" class="group p-4 bg-emerald-50 border-2 border-emerald-200 hover:border-emerald-500 rounded-2xl text-left transition shadow-sm hover:shadow flex flex-col justify-between">
+                        <div>
+                            <div class="text-emerald-600 text-2xl mb-2"><i class="fa-solid fa-headphones"></i></div>
+                            <div class="font-bold text-slate-800 group-hover:text-emerald-700">Spelling Bee</div>
+                            <p class="text-xs text-slate-500 mt-1">Listen to the word & sentence, then type the spelling.</p>
+                        </div>
+                    </button>
+
+                    <button onclick="startActivity('scramble')" class="group p-4 bg-amber-50 border-2 border-amber-200 hover:border-amber-500 rounded-2xl text-left transition shadow-sm hover:shadow flex flex-col justify-between">
+                        <div>
+                            <div class="text-amber-600 text-2xl mb-2"><i class="fa-solid fa-puzzle-piece"></i></div>
+                            <div class="font-bold text-slate-800 group-hover:text-amber-700">Letter Scramble</div>
+                            <p class="text-xs text-slate-500 mt-1">Tap shuffled letter tiles to build the correct word.</p>
+                        </div>
+                    </button>
+
+                    <button onclick="startActivity('flashcard')" class="group p-4 bg-sky-50 border-2 border-sky-200 hover:border-sky-500 rounded-2xl text-left transition shadow-sm hover:shadow flex flex-col justify-between">
+                        <div>
+                            <div class="text-sky-600 text-2xl mb-2"><i class="fa-solid fa-layer-group"></i></div>
+                            <div class="font-bold text-slate-800 group-hover:text-sky-700">Study Flashcards</div>
+                            <p class="text-xs text-slate-500 mt-1">Review words with speech audio & example sentences.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gameplay Screen -->
+        <div id="game-screen" class="hidden bg-white rounded-3xl shadow-xl p-6 md:p-8 space-y-6 border-4 border-emerald-100 relative">
+            
+            <!-- Top Bar -->
+            <div class="flex items-center justify-between text-sm text-slate-500">
+                <button onclick="quitGame()" class="flex items-center gap-1.5 hover:text-slate-800 font-semibold">
+                    <i class="fa-solid fa-arrow-left"></i> Menu
+                </button>
+                <div class="flex items-center gap-2">
+                    <span id="current-week-tag" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">Week 3</span>
+                    <span id="progress-text" class="font-bold text-slate-700">Word 1 / 10</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- AUDIO & CONTEXT CARD -->
+            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 text-center space-y-4 border border-emerald-100 shadow-inner">
+                <button onclick="playCurrentAudio()" class="mx-auto w-16 h-16 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-2xl shadow-lg hover:scale-105 active:scale-95 transition">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+                <div class="space-y-1">
+                    <p class="text-xs text-emerald-700 uppercase tracking-widest font-bold">Listen & Sentence Context</p>
+                    <p id="sentence-display" class="text-lg md:text-xl font-medium text-slate-700">"___"</p>
+                </div>
+            </div>
+
+            <!-- MODE 1: SPELLING BEE INPUT -->
+            <div id="spelling-input-area" class="space-y-4">
+                <div class="relative max-w-md mx-auto">
+                    <input type="text" id="spelling-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type word here..." class="w-full text-center text-2xl font-bold tracking-widest py-3 px-4 border-3 border-emerald-300 rounded-2xl focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100 transition">
+                </div>
+                <button onclick="checkSpellingAnswer()" class="w-full max-w-md mx-auto block bg-emerald-500 hover:bg-emerald-600 border-b-4 border-emerald-700 text-white font-bold py-3 rounded-2xl shadow transition text-lg active:translate-y-0.5">
+                    Check Answer <i class="fa-solid fa-circle-check ml-1"></i>
+                </button>
+            </div>
+
+            <!-- MODE 2: SCRAMBLE INTERACTIVE -->
+            <div id="scramble-area" class="hidden space-y-6">
+                <!-- Answer Slot Boxes -->
+                <div id="scramble-answer-slots" class="flex flex-wrap justify-center gap-2 min-h-[56px]"></div>
+                <!-- Available Letters -->
+                <div id="scramble-letters" class="flex flex-wrap justify-center gap-2"></div>
+
+                <div class="flex justify-center gap-3">
+                    <button onclick="resetScramble()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-sm transition">
+                        <i class="fa-solid fa-rotate-left"></i> Reset
+                    </button>
+                    <button onclick="checkScrambleAnswer()" class="px-6 py-2 bg-amber-500 hover:bg-amber-600 border-b-4 border-amber-700 text-white font-bold rounded-xl text-sm transition">
+                        Submit <i class="fa-solid fa-check ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- MODE 3: FLASHCARD VIEW -->
+            <div id="flashcard-area" class="hidden space-y-6 text-center">
+                <div id="flashcard-word" class="text-4xl md:text-5xl font-extrabold text-emerald-700 tracking-wider">
+                    the
+                </div>
+                <div class="flex justify-center gap-4">
+                    <button onclick="prevFlashcard()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">
+                        <i class="fa-solid fa-chevron-left mr-1"></i> Previous
+                    </button>
+                    <button onclick="nextFlashcard()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition shadow">
+                        Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feedback Modal Banner -->
+            <div id="feedback-banner" class="hidden rounded-2xl p-4 text-center font-bold text-lg pop-anim"></div>
+
+        </div>
+
+        <!-- Victory / Result Screen -->
+        <div id="results-screen" class="hidden bg-white rounded-3xl shadow-xl p-8 text-center space-y-6 border-4 border-emerald-100 pop-anim">
+            <div class="text-5xl text-yellow-400 animate-bounce"><i class="fa-solid fa-trophy"></i></div>
+            <div class="space-y-2">
+                <h2 class="text-3xl font-extrabold text-slate-800">Awesome Job!</h2>
+                <p class="text-slate-500">You completed the high-frequency word activity!</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-3 max-w-md mx-auto bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <div>
+                    <div class="text-xs text-slate-400 font-bold">SCORE</div>
+                    <div id="final-score" class="text-2xl font-extrabold text-emerald-600">0</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 font-bold">ACCURACY</div>
+                    <div id="final-accuracy" class="text-2xl font-extrabold text-amber-500">100%</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 font-bold">STREAK</div>
+                    <div id="final-streak" class="text-2xl font-extrabold text-orange-500">0</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-3 max-w-md mx-auto">
+                <button onclick="restartGame()" class="w-full bg-emerald-500 hover:bg-emerald-600 border-b-4 border-emerald-700 text-white font-bold py-3 rounded-2xl shadow transition">
+                    <i class="fa-solid fa-arrow-rotate-right mr-1"></i> Play Again
+                </button>
+                <button onclick="quitGame()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition">
+                    <i class="fa-solid fa-house mr-1"></i> Main Menu
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-400">
+        High Frequency Words Practice • Primary English Spelling
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        // High Frequency Word Lists from PDF Document
+        const hfwData = [
+            // Week 3 (HFW 1)
+            { word: "the", week: 1, sentence: "___ people" },
+            { word: "of", week: 1, sentence: "a number ___ people" },
+            { word: "and", week: 1, sentence: "you ___ I" },
+            { word: "a", week: 1, sentence: "___ long time" },
+            { word: "to", week: 1, sentence: "She said ___ go." },
+            { word: "in", week: 1, sentence: "up ___ the air" },
+            { word: "is", week: 1, sentence: "This ___ my cat." },
+            { word: "you", week: 1, sentence: "When would ___ go?" },
+            { word: "that", week: 1, sentence: "___ dog is big." },
+            { word: "it", week: 1, sentence: "write ___ down" },
+
+            // Week 5 (HFW 2)
+            { word: "he", week: 2, sentence: "___ called me just now." },
+            { word: "was", week: 2, sentence: "There ___ an old man." },
+            { word: "for", week: 2, sentence: "look ___ some people" },
+            { word: "on", week: 2, sentence: "Get ___ the bus." },
+            { word: "are", week: 2, sentence: "What ___ these?" },
+            { word: "as", week: 2, sentence: "___ big as the first" },
+            { word: "where", week: 2, sentence: "___ is he going?" },
+            { word: "his", week: 2, sentence: "with ___ mother" },
+            { word: "they", week: 2, sentence: "When did ___ go?" },
+            { word: "I", week: 2, sentence: "May ___ go first?" },
+
+            // Week 7 (HFW 3)
+            { word: "at", week: 3, sentence: "___ your house" },
+            { word: "be", week: 3, sentence: "Will you ___ good?" },
+            { word: "this", week: 3, sentence: "___ is the way." },
+            { word: "have", week: 3, sentence: "Please ___ a seat." },
+            { word: "from", week: 3, sentence: "___ my room" },
+            { word: "or", week: 3, sentence: "one ___ two" },
+            { word: "one", week: 3, sentence: "number ___" },
+            { word: "had", week: 3, sentence: "We ___ rice for dinner." },
+            { word: "by", week: 3, sentence: "___ the water" },
+            { word: "words", week: 3, sentence: "How many ___ are there?" },
+
+            // Week 9 (HFW 4)
+            { word: "but", week: 4, sentence: "___ not for me." },
+            { word: "not", week: 4, sentence: "___ now" },
+            { word: "what", week: 4, sentence: "___ are these?" },
+            { word: "all", week: 4, sentence: "___ or some" },
+            { word: "were", week: 4, sentence: "If we ___ older..." },
+            { word: "we", week: 4, sentence: "___ like to write." },
+            { word: "when", week: 4, sentence: "___ did they come?" },
+            { word: "your", week: 4, sentence: "Please write ___ name." },
+            { word: "can", week: 4, sentence: "___ you see?" },
+            { word: "said", week: 4, sentence: "He ___ goodbye to Mr Tan." }
+        ];
+
+        // State Variables
+        let selectedWeekFilter = 'all';
+        let currentMode = 'spelling';
+        let currentPool = [];
+        let currentIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let correctCount = 0;
+        let userScrambleSelection = [];
+
+        // Audio Effects Generator (Web Audio API)
+        function playAudioTone(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.1);
+                    osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(240, ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(150, ctx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch(e) {}
+        }
+
+        // Speech Synthesis for Words
+        function speakWord(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.85;
+                utterance.lang = 'en-US';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakSentence(fullSentence) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(fullSentence);
+                utterance.rate = 0.9;
+                utterance.lang = 'en-US';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Selection handlers
+        function selectWeek(weekNum) {
+            selectedWeekFilter = weekNum;
+            document.querySelectorAll('.week-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-500', 'text-white', 'border-b-4', 'border-emerald-700');
+                btn.classList.add('bg-white', 'text-emerald-800', 'border-2', 'border-emerald-300');
+            });
+
+            const targetBtn = event.currentTarget;
+            targetBtn.classList.remove('bg-white', 'text-emerald-800', 'border-2', 'border-emerald-300');
+            targetBtn.classList.add('bg-emerald-500', 'text-white', 'border-b-4', 'border-emerald-700');
+        }
+
+        function startActivity(mode) {
+            currentMode = mode;
+            // Filter pool
+            if (selectedWeekFilter === 'all') {
+                currentPool = [...hfwData];
+            } else {
+                currentPool = hfwData.filter(item => item.week === Number(selectedWeekFilter));
+            }
+
+            // Shuffle pool for activity
+            if (mode !== 'flashcard') {
+                currentPool.sort(() => Math.random() - 0.5);
+            }
+
+            currentIndex = 0;
+            score = 0;
+            streak = 0;
+            correctCount = 0;
+            updateStats();
+
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const currentObj = currentPool[currentIndex];
+            
+            // Set week tag
+            const weekLabels = { 1: "Week 3", 2: "Week 5", 3: "Week 7", 4: "Week 9" };
+            document.getElementById('current-week-tag').textContent = weekLabels[currentObj.week] || "All Weeks";
+            document.getElementById('progress-text').textContent = `Word ${currentIndex + 1} / ${currentPool.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / currentPool.length) * 100}%`;
+
+            // Sentence display with blank
+            document.getElementById('sentence-display').textContent = `"${currentObj.sentence}"`;
+
+            // Hide feedback
+            const feedback = document.getElementById('feedback-banner');
+            feedback.className = 'hidden rounded-2xl p-4 text-center font-bold text-lg pop-anim';
+
+            // Speak word automatically on question load
+            setTimeout(() => {
+                playCurrentAudio();
+            }, 300);
+
+            // Hide all mode areas
+            document.getElementById('spelling-input-area').classList.add('hidden');
+            document.getElementById('scramble-area').classList.add('hidden');
+            document.getElementById('flashcard-area').classList.add('hidden');
+
+            if (currentMode === 'spelling') {
+                document.getElementById('spelling-input-area').classList.remove('hidden');
+                const input = document.getElementById('spelling-input');
+                input.value = '';
+                input.focus();
+            } else if (currentMode === 'scramble') {
+                document.getElementById('scramble-area').classList.remove('hidden');
+                setupScramble(currentObj.word);
+            } else if (currentMode === 'flashcard') {
+                document.getElementById('flashcard-area').classList.remove('hidden');
+                document.getElementById('flashcard-word').textContent = currentObj.word;
+            }
+        }
+
+        function playCurrentAudio() {
+            const currentObj = currentPool[currentIndex];
+            speakWord(currentObj.word);
+        }
+
+        // Mode 1: Check Spelling
+        function checkSpellingAnswer() {
+            const input = document.getElementById('spelling-input');
+            const userAns = input.value.trim();
+            const target = currentPool[currentIndex].word;
+
+            if (!userAns) return;
+
+            if (userAns.toLowerCase() === target.toLowerCase()) {
+                handleCorrectAnswer();
+            } else {
+                handleWrongAnswer(target);
+            }
+        }
+
+        // Mode 2: Scramble Setup & Controls
+        function setupScramble(targetWord) {
+            userScrambleSelection = [];
+            const letters = targetWord.split('').sort(() => Math.random() - 0.5);
+            
+            renderScrambleUI(letters);
+        }
+
+        function renderScrambleUI(letters) {
+            const slotsContainer = document.getElementById('scramble-answer-slots');
+            const lettersContainer = document.getElementById('scramble-letters');
+
+            slotsContainer.innerHTML = '';
+            lettersContainer.innerHTML = '';
+
+            const targetLen = currentPool[currentIndex].word.length;
+
+            // Render selected letters
+            for (let i = 0; i < targetLen; i++) {
+                const box = document.createElement('div');
+                box.className = 'w-12 h-12 border-2 border-emerald-400 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl font-bold text-emerald-800 shadow-sm';
+                box.textContent = userScrambleSelection[i] ? userScrambleSelection[i].char : '';
+                slotsContainer.appendChild(box);
+            }
+
+            // Render available letter tiles
+            letters.forEach((char, idx) => {
+                const isUsed = userScrambleSelection.some(item => item.id === idx);
+                const tile = document.createElement('button');
+                tile.className = `w-12 h-12 rounded-xl text-xl font-bold transition shadow ${
+                    isUsed ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-amber-400 hover:bg-amber-500 text-amber-950 border-b-4 border-amber-600 active:translate-y-0.5'
+                }`;
+                tile.textContent = char;
+                tile.disabled = isUsed;
+                tile.onclick = () => selectScrambleLetter(char, idx, letters);
+                lettersContainer.appendChild(tile);
+            });
+        }
+
+        function selectScrambleLetter(char, id, originalLetters) {
+            userScrambleSelection.push({ char, id });
+            renderScrambleUI(originalLetters);
+        }
+
+        function resetScramble() {
+            userScrambleSelection = [];
+            setupScramble(currentPool[currentIndex].word);
+        }
+
+        function checkScrambleAnswer() {
+            const userWord = userScrambleSelection.map(i => i.char).join('');
+            const target = currentPool[currentIndex].word;
+
+            if (userWord.length < target.length) return;
+
+            if (userWord.toLowerCase() === target.toLowerCase()) {
+                handleCorrectAnswer();
+            } else {
+                handleWrongAnswer(target);
+            }
+        }
+
+        // Mode 3: Flashcard Navigation
+        function nextFlashcard() {
+            if (currentIndex < currentPool.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevFlashcard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadQuestion();
+            }
+        }
+
+        // Generic Correct / Wrong Handlers
+        function handleCorrectAnswer() {
+            playAudioTone('correct');
+            score += 10 + (streak * 2);
+            streak++;
+            correctCount++;
+            updateStats();
+
+            showFeedback(true, `Great job! "${currentPool[currentIndex].word}" is correct!`);
+
+            setTimeout(() => {
+                nextQuestion();
+            }, 1400);
+        }
+
+        function handleWrongAnswer(targetWord) {
+            playAudioTone('wrong');
+            streak = 0;
+            updateStats();
+
+            // Trigger shake
+            const screen = document.getElementById('game-screen');
+            screen.classList.add('shake');
+            setTimeout(() => screen.classList.remove('shake'), 400);
+
+            showFeedback(false, `Oops! The correct spelling is: "${targetWord}"`);
+
+            setTimeout(() => {
+                nextQuestion();
+            }, 2000);
+        }
+
+        function showFeedback(isCorrect, message) {
+            const banner = document.getElementById('feedback-banner');
+            banner.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800');
+            if (isCorrect) {
+                banner.classList.add('bg-emerald-100', 'text-emerald-800', 'border-2', 'border-emerald-300');
+            } else {
+                banner.classList.add('bg-red-100', 'text-red-800', 'border-2', 'border-red-300');
+            }
+            banner.textContent = message;
+        }
+
+        function nextQuestion() {
+            if (currentIndex < currentPool.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+        }
+
+        function showResults() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            const accuracy = Math.round((correctCount / currentPool.length) * 100) || 0;
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-accuracy').textContent = `${accuracy}%`;
+            document.getElementById('final-streak').textContent = streak;
+        }
+
+        function restartGame() {
+            startActivity(currentMode);
+        }
+
+        function quitGame() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+        }
+
+        // Keyboard Event Listener for Enter Key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && currentMode === 'spelling' && !document.getElementById('game-screen').classList.contains('hidden')) {
+                checkSpellingAnswer();
+            }
+        });
+    </script>
+</body>
+</html>
