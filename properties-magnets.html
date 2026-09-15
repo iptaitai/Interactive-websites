@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Properties of Magnets - Interactive Revision & Games</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap');
+    
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: #f0fdf4;
+    }
+
+    h1, h2, h3, h4, button, .font-fun {
+      font-family: 'Fredoka', cursive, sans-serif;
+    }
+
+    /* Flip Card Effect */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+
+    /* Pulse & Float Animations */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .animate-float {
+      animation: floatSlow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .animate-pulse-ring {
+      animation: pulseRing 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg p-4 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+      <div class="flex items-center space-x-3">
+        <span class="text-3xl">🧲</span>
+        <div>
+          <h1 class="text-2xl font-bold tracking-wide">Magnet Science Lab</h1>
+          <p class="text-emerald-100 text-xs sm:text-sm">Master Concepts, Spelling & Interactive Simulations</p>
+        </div>
+      </div>
+      <!-- Navigation Tabs -->
+      <nav class="flex bg-emerald-800/60 p-1 rounded-xl text-sm font-semibold space-x-1">
+        <button onclick="switchTab('flashcards')" id="btn-flashcards" class="tab-btn px-4 py-2 rounded-lg transition-all bg-white text-emerald-800 shadow">
+          🎴 Flashcards
+        </button>
+        <button onclick="switchTab('simulations')" id="btn-simulations" class="tab-btn px-4 py-2 rounded-lg transition-all text-white hover:bg-emerald-700">
+          🧪 Visual Lab
+        </button>
+        <button onclick="switchTab('games')" id="btn-games" class="tab-btn px-4 py-2 rounded-lg transition-all text-white hover:bg-emerald-700">
+          🎮 Games
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-6xl mx-auto p-4 sm:p-6 flex-grow w-full">
+
+    <!-- ================= TAB 1: FLASHCARDS ================= -->
+    <section id="tab-flashcards" class="tab-content space-y-6">
+      <div class="bg-white p-6 rounded-2xl shadow-md border border-emerald-100 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-emerald-900 flex items-center gap-2">
+            <span>📚</span> Interactive Vocabulary & Spelling Cards
+          </h2>
+          <p class="text-slate-600 text-sm mt-1">
+            Click cards to flip between term & definition. Pay close attention to tricky target spellings!
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="prevCard()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">
+            &larr; Prev
+          </button>
+          <span id="card-indicator" class="font-bold text-emerald-700 text-sm px-3">1 / 10</span>
+          <button onclick="nextCard()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition">
+            Next &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Flashcard Display Area -->
+      <div class="flex justify-center items-center my-4">
+        <div id="flashcard-box" onclick="flipCard()" class="w-full max-w-xl h-80 perspective-1000 cursor-pointer">
+          <div id="card-inner" class="relative w-full h-full transform-style-3d rounded-3xl shadow-xl border-2 border-emerald-200 bg-gradient-to-br from-white to-emerald-50 p-8 flex flex-col justify-between items-center text-center">
+            
+            <!-- FRONT -->
+            <div id="card-front" class="absolute inset-0 backface-hidden p-8 flex flex-col justify-between items-center">
+              <div class="w-full flex justify-between items-center text-xs text-emerald-600 font-bold tracking-widest uppercase">
+                <span>Key Vocabulary</span>
+                <span id="card-category">Definition & Spelling</span>
+              </div>
+              <div class="my-auto space-y-3">
+                <div id="card-icon" class="text-6xl animate-bounce">🧲</div>
+                <h3 id="card-term" class="text-3xl font-extrabold text-emerald-950 tracking-wide">Magnet</h3>
+                <div class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-semibold">
+                  <button onclick="event.stopPropagation(); speakTerm()" class="hover:text-emerald-950 flex items-center gap-1">
+                    🔊 Listen Pronunciation
+                  </button>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 font-medium">Click anywhere to flip definition 🔄</p>
+            </div>
+
+            <!-- BACK -->
+            <div id="card-back" class="absolute inset-0 backface-hidden rotate-y-180 p-8 flex flex-col justify-between items-center bg-gradient-to-br from-emerald-900 to-teal-950 text-white rounded-3xl">
+              <div class="w-full flex justify-between items-center text-xs text-emerald-300 font-bold tracking-widest uppercase">
+                <span>Definition</span>
+                <span id="card-spelling-hint">Spelling Practice</span>
+              </div>
+              <div class="my-auto space-y-3">
+                <p id="card-definition" class="text-lg leading-relaxed text-emerald-50 font-medium">
+                  An object that produces a magnetic field and can attract magnetic materials like iron and steel.
+                </p>
+                <div class="pt-2 border-t border-emerald-800/80 text-xs text-emerald-300 font-mono">
+                  Key Metals: <span id="card-extra-info" class="text-amber-300 font-bold">Iron, Steel, Nickel, Cobalt</span>
+                </div>
+              </div>
+              <p class="text-xs text-emerald-400 font-medium">Click anywhere to flip back 🔄</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Spelling Practice Bar -->
+      <div class="bg-white p-5 rounded-2xl shadow-md border border-emerald-100 max-w-xl mx-auto space-y-3">
+        <h4 class="font-bold text-slate-800 text-sm flex items-center justify-between">
+          <span>✍️ Test Your Spelling for this Card:</span>
+          <span id="spelling-feedback" class="text-xs font-bold"></span>
+        </h4>
+        <div class="flex gap-2">
+          <input type="text" id="spelling-input" placeholder="Type the word here..." class="flex-grow px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-sm">
+          <button onclick="checkSpelling()" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow text-sm transition">
+            Check
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: VISUAL LAB (ANIMATIONS) ================= -->
+    <section id="tab-simulations" class="tab-content hidden space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl shadow-md border border-emerald-100">
+        <h2 class="text-xl font-bold text-emerald-900 flex items-center gap-2">
+          <span>🧪</span> Animated Science Lab: Magnetic Interactions
+        </h2>
+        <p class="text-slate-600 text-sm mt-1">
+          Explore magnetic forces in real-time with visual animations! Select an experiment below.
+        </p>
+
+        <!-- Sub-Experiment Nav -->
+        <div class="flex flex-wrap gap-2 mt-4">
+          <button onclick="showExperiment('attract-repel')" id="sub-attract-repel" class="subtab-btn px-4 py-2 rounded-xl text-sm font-bold bg-emerald-700 text-white shadow">
+            1. Attraction vs Repulsion
+          </button>
+          <button onclick="showExperiment('floating-rings')" id="sub-floating-rings" class="subtab-btn px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">
+            2. Floating Ring Magnets
+          </button>
+          <button onclick="showExperiment('compass')" id="sub-compass" class="subtab-btn px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">
+            3. Freely Suspended Compass
+          </button>
+          <button onclick="showExperiment('poles-strength')" id="sub-poles-strength" class="subtab-btn px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">
+            4. Strength at Poles
+          </button>
+        </div>
+      </div>
+
+      <!-- EXPERIMENT 1: Attraction & Repulsion -->
+      <div id="exp-attract-repel" class="exp-box bg-white p-6 rounded-2xl shadow-md border border-slate-200 space-y-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+          <div>
+            <h3 class="font-bold text-lg text-slate-800">Experiment 1: Magnetic Attraction & Repulsion</h3>
+            <p class="text-xs text-slate-500">Unlike poles attract (pull together); Like poles repel (push apart).</p>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl text-xs font-bold">
+            <button onclick="setMagnetOrientations('N', 'S', 'N', 'S')" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow">N-S facing S-N (Unlike - Attract)</button>
+            <button onclick="setMagnetOrientations('N', 'S', 'S', 'N')" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white shadow">S facing S (Like - Repel)</button>
+            <button onclick="setMagnetOrientations('S', 'N', 'N', 'S')" class="px-3 py-1.5 rounded-lg bg-rose-600 text-white shadow">N facing N (Like - Repel)</button>
+          </div>
+        </div>
+
+        <!-- Animation Canvas Area -->
+        <div class="relative w-full h-64 bg-slate-900 rounded-2xl overflow-hidden flex items-center justify-center p-4 border-2 border-slate-800">
+          <!-- Force Field Canvas Overlay -->
+          <canvas id="field-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+
+          <!-- Left Magnet -->
+          <div id="magnet-left" class="relative transition-all duration-700 flex w-44 h-16 rounded-xl overflow-hidden shadow-2xl border-2 border-white/20 transform">
+            <div id="mag-left-p1" class="w-1/2 bg-red-600 text-white font-black flex items-center justify-center text-xl tracking-wider">N</div>
+            <div id="mag-left-p2" class="w-1/2 bg-blue-600 text-white font-black flex items-center justify-center text-xl tracking-wider">S</div>
+          </div>
+
+          <!-- Interaction Indicator -->
+          <div id="force-badge" class="absolute top-4 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-lg bg-emerald-500 text-white animate-pulse">
+            ATTRACTING (UNLIKE POLES)
+          </div>
+
+          <!-- Right Magnet -->
+          <div id="magnet-right" class="relative transition-all duration-700 flex w-44 h-16 rounded-xl overflow-hidden shadow-2xl border-2 border-white/20 transform">
+            <div id="mag-right-p1" class="w-1/2 bg-red-600 text-white font-black flex items-center justify-center text-xl tracking-wider">N</div>
+            <div id="mag-right-p2" class="w-1/2 bg-blue-600 text-white font-black flex items-center justify-center text-xl tracking-wider">S</div>
+          </div>
+        </div>
+        <p id="exp1-explanation" class="text-sm bg-emerald-50 text-emerald-900 p-3 rounded-xl border border-emerald-200">
+          💡 <strong>Key Principle:</strong> When UNLIKE poles face each other (North & South), magnetic force pulls them together.
+        </p>
+      </div>
+
+      <!-- EXPERIMENT 2: Floating Ring Magnets -->
+      <div id="exp-floating-rings" class="exp-box hidden bg-white p-6 rounded-2xl shadow-md border border-slate-200 space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="font-bold text-lg text-slate-800">Experiment 2: Levitating Ring Magnet Tower</h3>
+            <p class="text-xs text-slate-500">Why can ring magnets float above one another?</p>
+          </div>
+          <button onclick="flipRing(1)" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow">
+            🔄 Flip Top Ring Magnet Pole
+          </button>
+        </div>
+
+        <div class="w-full h-80 bg-gradient-to-b from-slate-900 to-indigo-950 rounded-2xl flex items-center justify-center relative overflow-hidden border-2 border-indigo-900">
+          <!-- Wooden Stand Base -->
+          <div class="absolute bottom-6 w-48 h-6 bg-amber-800 rounded-lg shadow-lg border border-amber-950"></div>
+          <!-- Vertical Pole -->
+          <div class="absolute bottom-11 w-4 h-56 bg-slate-400 rounded-t-full shadow-inner border border-slate-500"></div>
+
+          <!-- Base Ring Magnet -->
+          <div class="absolute bottom-12 w-28 h-10 bg-gradient-to-r from-red-600 to-blue-600 rounded-2xl border-2 border-white/40 shadow-xl flex items-center justify-around text-white font-bold text-xs">
+            <span>N</span><span>BASE RING</span><span>S</span>
+          </div>
+
+          <!-- Top Ring Magnet (Levitating / Snap) -->
+          <div id="top-ring-magnet" class="absolute bottom-40 w-28 h-10 bg-gradient-to-r from-blue-600 to-red-600 rounded-2xl border-2 border-white/40 shadow-2xl flex items-center justify-around text-white font-bold text-xs transition-all duration-700 animate-float">
+            <span id="top-ring-l">S</span><span>TOP RING</span><span id="top-ring-r">N</span>
+          </div>
+        </div>
+
+        <p id="ring-explanation" class="text-sm bg-indigo-50 text-indigo-950 p-3 rounded-xl border border-indigo-200">
+          ✨ <strong>Observation:</strong> Like poles face each other (S facing S). The repulsive magnetic force pushes upward against gravity, causing the ring to float!
+        </p>
+      </div>
+
+      <!-- EXPERIMENT 3: Freely Suspended Compass -->
+      <div id="exp-compass" class="exp-box hidden bg-white p-6 rounded-2xl shadow-md border border-slate-200 space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="font-bold text-lg text-slate-800">Experiment 3: Freely Suspended Magnet & Compass</h3>
+            <p class="text-xs text-slate-500">A freely suspended bar magnet always comes to rest pointing North-South.</p>
+          </div>
+          <button onclick="spinCompass()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow">
+            🌀 Spin Magnet / Compass
+          </button>
+        </div>
+
+        <div class="w-full h-80 bg-slate-900 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden border-2 border-slate-800">
+          <!-- Earth Cardinal Directions -->
+          <span class="absolute top-3 text-red-500 font-extrabold text-lg tracking-widest">NORTH ⬆️</span>
+          <span class="absolute bottom-3 text-blue-400 font-extrabold text-lg tracking-widest">SOUTH ⬇️</span>
+          <span class="absolute left-4 text-slate-400 font-extrabold text-sm">WEST ⬅️</span>
+          <span class="absolute right-4 text-slate-400 font-extrabold text-sm">➡️ EAST</span>
+
+          <!-- Suspension String -->
+          <div class="w-0.5 h-20 bg-amber-200/60 z-10"></div>
+
+          <!-- Suspended Magnet -->
+          <div id="compass-needle" class="w-52 h-12 bg-transparent flex rounded-xl overflow-hidden shadow-2xl border-2 border-white/30 transition-all duration-1000 transform">
+            <div class="w-1/2 bg-red-600 text-white font-black flex items-center justify-center text-sm">
+              NORTH POLE (N)
+            </div>
+            <div class="w-1/2 bg-blue-600 text-white font-black flex items-center justify-center text-sm">
+              SOUTH POLE (S)
+            </div>
+          </div>
+        </div>
+
+        <p class="text-sm bg-amber-50 text-amber-950 p-3 rounded-xl border border-amber-200">
+          🧭 <strong>Earth Behavior:</strong> Earth acts like a massive magnet! The North pole of a freely suspended magnet is pulled toward the Earth's magnetic North.
+        </p>
+      </div>
+
+      <!-- EXPERIMENT 4: Poles Strength Tester -->
+      <div id="exp-poles-strength" class="exp-box hidden bg-white p-6 rounded-2xl shadow-md border border-slate-200 space-y-4">
+        <div>
+          <h3 class="font-bold text-lg text-slate-800">Experiment 4: Magnetic Strength at Poles</h3>
+          <p class="text-xs text-slate-500">Dip a bar magnet into steel paperclips. Where do the most clips stick?</p>
+        </div>
+
+        <div class="w-full h-72 bg-slate-900 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden border-2 border-slate-800 p-4">
+          <!-- Bar Magnet -->
+          <div class="w-72 h-16 flex rounded-xl overflow-hidden shadow-2xl border-2 border-white/40 relative">
+            <div class="w-1/2 bg-red-600 text-white font-extrabold flex items-center justify-center text-lg">NORTH POLE</div>
+            <div class="w-1/2 bg-blue-600 text-white font-extrabold flex items-center justify-center text-lg">SOUTH POLE</div>
+
+            <!-- Clustered Paperclips visually attached at poles -->
+            <div class="absolute -bottom-6 left-2 flex gap-1 text-2xl">📎📎📎📎</div>
+            <div class="absolute -bottom-6 right-2 flex gap-1 text-2xl">📎📎📎📎</div>
+            <div class="absolute -bottom-2 left-32 text-xs text-slate-300 font-bold bg-slate-800/80 px-2 py-0.5 rounded">
+              0 Clips (Middle)
+            </div>
+          </div>
+        </div>
+
+        <p class="text-sm bg-emerald-50 text-emerald-950 p-3 rounded-xl border border-emerald-200">
+          🧲 <strong>Crucial Fact:</strong> Magnetic attraction is strongest at the two <strong>POLES</strong>. Almost no clips stick to the center of the magnet!
+        </p>
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 3: GAMES ================= -->
+    <section id="tab-games" class="tab-content hidden space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl shadow-md border border-emerald-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-emerald-900 flex items-center gap-2">
+            <span>🎮</span> Magnet Learning Games
+          </h2>
+          <p class="text-slate-600 text-sm mt-1">
+            Test your understanding of magnetic vs non-magnetic materials and key spellings!
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="showGame('sorter')" id="btn-game-sorter" class="px-4 py-2 bg-emerald-700 text-white font-bold text-sm rounded-xl shadow">
+            🗂️ Sorting Game
+          </button>
+          <button onclick="showGame('spelling-bee')" id="btn-game-spelling" class="px-4 py-2 bg-slate-100 text-slate-700 font-bold text-sm rounded-xl hover:bg-slate-200">
+            🐝 Spelling Bee Game
+          </button>
+        </div>
+      </div>
+
+      <!-- GAME 1: MAGNETIC VS NON-MAGNETIC SORTER -->
+      <div id="game-sorter-box" class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 space-y-6">
+        <div class="flex justify-between items-center border-b pb-4">
+          <div>
+            <h3 class="font-bold text-lg text-slate-800">Game 1: Material Classifier</h3>
+            <p class="text-xs text-slate-500">Classify the items correctly into Magnetic or Non-Magnetic!</p>
+          </div>
+          <div class="bg-emerald-100 text-emerald-900 font-extrabold px-4 py-2 rounded-xl text-sm">
+            Score: <span id="sorter-score" class="text-emerald-700">0</span> / 8
+          </div>
+        </div>
+
+        <!-- Current Object to Classify -->
+        <div class="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300">
+          <div id="sorter-item-icon" class="text-6xl animate-bounce">📌</div>
+          <h4 id="sorter-item-name" class="text-2xl font-bold text-slate-800 mt-2">Steel Paperclip</h4>
+          <p id="sorter-item-material" class="text-xs text-slate-500 font-semibold mt-1">Made of: Steel</p>
+          
+          <div class="flex gap-4 mt-6 w-full max-w-md">
+            <button onclick="classifyItem(true)" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition">
+              🧲 MAGNETIC
+            </button>
+            <button onclick="classifyItem(false)" class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-lg transition">
+              🚫 NON-MAGNETIC
+            </button>
+          </div>
+        </div>
+
+        <div id="sorter-feedback" class="text-center font-bold text-sm h-6"></div>
+      </div>
+
+      <!-- GAME 2: SPELLING BEE -->
+      <div id="game-spelling-box" class="hidden bg-white p-6 rounded-2xl shadow-md border border-slate-200 space-y-6">
+        <div class="flex justify-between items-center border-b pb-4">
+          <div>
+            <h3 class="font-bold text-lg text-slate-800">Game 2: Spelling Bee Challenge</h3>
+            <p class="text-xs text-slate-500">Listen to the definition or pronunciation and spell the science word!</p>
+          </div>
+          <div class="bg-teal-100 text-teal-900 font-extrabold px-4 py-2 rounded-xl text-sm">
+            Spelling Score: <span id="bee-score" class="text-teal-700">0</span>
+          </div>
+        </div>
+
+        <div class="max-w-xl mx-auto space-y-4 text-center">
+          <div class="bg-teal-50 p-6 rounded-2xl border border-teal-200 space-y-3">
+            <span class="text-xs text-teal-700 font-bold tracking-widest uppercase">Clue / Definition</span>
+            <p id="bee-clue" class="text-lg font-medium text-teal-950">
+              A natural magnet discovered in ancient times.
+            </p>
+            <button onclick="speakBeeWord()" class="px-3 py-1 bg-teal-200 text-teal-900 rounded-lg text-xs font-bold hover:bg-teal-300">
+              🔊 Hear Word Pronunciation
+            </button>
+          </div>
+
+          <div class="flex gap-2">
+            <input type="text" id="bee-input" placeholder="Type correct spelling..." class="flex-grow px-4 py-3 border-2 border-teal-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono text-lg text-center uppercase tracking-widest">
+            <button onclick="submitBeeSpelling()" class="px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-xl shadow-lg transition">
+              Submit
+            </button>
+          </div>
+          <div id="bee-feedback" class="font-bold text-sm h-6"></div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 text-xs text-center py-4 mt-8">
+    <p>Properties of Magnets Revision Tool • Designed for Primary 3 / General Science Learning</p>
+  </footer>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // --- FLASHCARD DATA ---
+    const flashcards = [
+      {
+        term: "Magnet",
+        definition: "An object made of iron or steel that attracts magnetic materials and has two poles.",
+        icon: "🧲",
+        category: "Definition & Spelling",
+        extra: "Iron, Steel, Nickel, Cobalt"
+      },
+      {
+        term: "Lodestone",
+        definition: "A naturally occurring magnetic rock (natural magnet) discovered in ancient times.",
+        icon: "🪨",
+        category: "Natural Magnet",
+        extra: "Discovered by shepherd Magnes"
+      },
+      {
+        term: "Attract",
+        definition: "To pull towards each other. Occurs between unlike poles (N-S) or a magnet and magnetic material.",
+        icon: "🧲➡️⬅️📌",
+        category: "Interaction",
+        extra: "Pulling force"
+      },
+      {
+        term: "Repel",
+        definition: "To push away from each other. Occurs ONLY between two LIKE poles (N-N or S-S).",
+        icon: "⬅️🧲 🧲➡️",
+        category: "Interaction",
+        extra: "Only sure test for a magnet!"
+      },
+      {
+        term: "Poles",
+        definition: "The two ends of a magnet (North pole & South pole) where magnetic attraction is strongest.",
+        icon: "🧭",
+        category: "Magnet Property",
+        extra: "Every magnet has 2 poles"
+      },
+      {
+        term: "Aluminium",
+        definition: "A light metal that is NON-MAGNETIC and will NOT be attracted by magnets.",
+        icon: "🥫",
+        category: "Non-Magnetic Metal",
+        extra: "Copper & Gold are also non-magnetic"
+      },
+      {
+        term: "Cobalt",
+        definition: "A metallic element that IS magnetic and is attracted by magnets.",
+        icon: "⚙️",
+        category: "Magnetic Material",
+        extra: "Iron, Steel, Nickel, Cobalt"
+      },
+      {
+        term: "Nickel",
+        definition: "A silver-white magnetic metal attracted to magnets.",
+        icon: "🪙",
+        category: "Magnetic Material",
+        extra: "Magnetic Metal"
+      },
+      {
+        term: "Compass",
+        definition: "A device containing a freely suspended magnetic needle that always rests in the North-South direction.",
+        icon: "🧭",
+        category: "Application",
+        extra: "Used by sailors & hikers"
+      },
+      {
+        term: "Suspended",
+        definition: "Hanging freely so it can turn without obstruction, like a suspended magnet pointing N-S.",
+        icon: "🧵",
+        category: "Vocabulary",
+        extra: "Points North-South"
+      }
+    ];
+
+    let currentCardIdx = 0;
+    let isFlipped = false;
+
+    function renderCard() {
+      const card = flashcards[currentCardIdx];
+      isFlipped = false;
+      document.getElementById('card-inner').classList.remove('rotate-y-180');
+      
+      document.getElementById('card-term').innerText = card.term;
+      document.getElementById('card-definition').innerText = card.definition;
+      document.getElementById('card-icon').innerText = card.icon;
+      document.getElementById('card-category').innerText = card.category;
+      document.getElementById('card-extra-info').innerText = card.extra;
+      document.getElementById('card-indicator').innerText = `${currentCardIdx + 1} / ${flashcards.length}`;
+      
+      document.getElementById('spelling-input').value = "";
+      document.getElementById('spelling-feedback').innerText = "";
+    }
+
+    function flipCard() {
+      isFlipped = !isFlipped;
+      const inner = document.getElementById('card-inner');
+      if (isFlipped) {
+        inner.classList.add('rotate-y-180');
+      } else {
+        inner.classList.remove('rotate-y-180');
+      }
+    }
+
+    function prevCard() {
+      currentCardIdx = (currentCardIdx - 1 + flashcards.length) % flashcards.length;
+      renderCard();
+    }
+
+    function nextCard() {
+      currentCardIdx = (currentCardIdx + 1) % flashcards.length;
+      renderCard();
+    }
+
+    function speakTerm() {
+      const term = flashcards[currentCardIdx].term;
+      if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance(term);
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+      }
+    }
+
+    function checkSpelling() {
+      const input = document.getElementById('spelling-input').value.trim().toLowerCase();
+      const target = flashcards[currentCardIdx].term.toLowerCase();
+      const fb = document.getElementById('spelling-feedback');
+      
+      if (input === target) {
+        fb.innerText = "✅ Perfect Spelling!";
+        fb.className = "text-xs font-bold text-emerald-600";
+      } else {
+        fb.innerText = `❌ Incorrect. Correct: ${flashcards[currentCardIdx].term}`;
+        fb.className = "text-xs font-bold text-rose-600";
+      }
+    }
+
+    // --- TAB SWITCHING ---
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-emerald-800', 'shadow');
+        btn.classList.add('text-white', 'hover:bg-emerald-700');
+      });
+
+      document.getElementById(`tab-${tab}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`btn-${tab}`);
+      activeBtn.classList.add('bg-white', 'text-emerald-800', 'shadow');
+      activeBtn.classList.remove('text-white', 'hover:bg-emerald-700');
+
+      if (tab === 'simulations') drawFieldLines();
+    }
+
+    // --- SUB-EXPERIMENT SWITCHING ---
+    function showExperiment(expId) {
+      document.querySelectorAll('.exp-box').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.subtab-btn').forEach(btn => {
+        btn.classList.remove('bg-emerald-700', 'text-white', 'shadow');
+        btn.classList.add('bg-slate-100', 'text-slate-700');
+      });
+
+      document.getElementById(`exp-${expId}`).classList.remove('hidden');
+      const activeSub = document.getElementById(`sub-${expId}`);
+      activeSub.classList.add('bg-emerald-700', 'text-white', 'shadow');
+      activeSub.classList.remove('bg-slate-100', 'text-slate-700');
+
+      if (expId === 'attract-repel') drawFieldLines();
+    }
+
+    // --- EXPERIMENT 1 LOGIC & CANVAS FIELD LINES ---
+    let leftPoles = { p1: 'N', p2: 'S' };
+    let rightPoles = { p1: 'S', p2: 'N' };
+
+    function setMagnetOrientations(l1, l2, r1, r2) {
+      leftPoles = { p1: l1, p2: l2 };
+      rightPoles = { p1: r1, p2: r2 };
+
+      document.getElementById('mag-left-p1').innerText = l1;
+      document.getElementById('mag-left-p1').className = `w-1/2 font-black flex items-center justify-center text-xl ${l1 === 'N' ? 'bg-red-600' : 'bg-blue-600'} text-white`;
+      document.getElementById('mag-left-p2').innerText = l2;
+      document.getElementById('mag-left-p2').className = `w-1/2 font-black flex items-center justify-center text-xl ${l2 === 'N' ? 'bg-red-600' : 'bg-blue-600'} text-white`;
+
+      document.getElementById('mag-right-p1').innerText = r1;
+      document.getElementById('mag-right-p1').className = `w-1/2 font-black flex items-center justify-center text-xl ${r1 === 'N' ? 'bg-red-600' : 'bg-blue-600'} text-white`;
+      document.getElementById('mag-right-p2').innerText = r2;
+      document.getElementById('mag-right-p2').className = `w-1/2 font-black flex items-center justify-center text-xl ${r2 === 'N' ? 'bg-red-600' : 'bg-blue-600'} text-white`;
+
+      const facingLeft = l2;
+      const facingRight = r1;
+
+      const magLeft = document.getElementById('magnet-left');
+      const magRight = document.getElementById('magnet-right');
+      const badge = document.getElementById('force-badge');
+      const expText = document.getElementById('exp1-explanation');
+
+      if (facingLeft !== facingRight) {
+        // ATTRACT
+        magLeft.style.transform = 'translateX(35px)';
+        magRight.style.transform = 'translateX(-35px)';
+        badge.innerText = 'ATTRACTING (UNLIKE POLES)';
+        badge.className = 'absolute top-4 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-lg bg-emerald-500 text-white animate-pulse';
+        expText.innerHTML = '💡 <strong>Key Principle:</strong> UNLIKE poles face each other (' + facingLeft + ' & ' + facingRight + '). Magnetic forces pull magnets towards each other!';
+      } else {
+        // REPEL
+        magLeft.style.transform = 'translateX(-30px)';
+        magRight.style.transform = 'translateX(30px)';
+        badge.innerText = 'REPELLING (LIKE POLES)';
+        badge.className = 'absolute top-4 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-lg bg-rose-500 text-white animate-pulse';
+        expText.innerHTML = '⚡ <strong>Key Principle:</strong> LIKE poles face each other (' + facingLeft + ' & ' + facingRight + '). Magnetic forces push magnets away from each other!';
+      }
+
+      drawFieldLines();
+    }
+
+    function drawFieldLines() {
+      const canvas = document.getElementById('field-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = 'rgba(52, 211, 153, 0.3)';
+      ctx.lineWidth = 2;
+      const centerY = canvas.height / 2;
+
+      for (let i = -40; i <= 40; i += 15) {
+        ctx.beginPath();
+        ctx.moveTo(canvas.width * 0.2, centerY + i);
+        ctx.bezierCurveTo(canvas.width * 0.4, centerY + i * 2, canvas.width * 0.6, centerY + i * 2, canvas.width * 0.8, centerY + i);
+        ctx.stroke();
+      }
+    }
+
+    // --- EXPERIMENT 2 LOGIC (FLOATING RINGS) ---
+    let topRingIsRepelling = true;
+    function flipRing() {
+      topRingIsRepelling = !topRingIsRepelling;
+      const topRing = document.getElementById('top-ring-magnet');
+      const l = document.getElementById('top-ring-l');
+      const r = document.getElementById('top-ring-r');
+      const exp = document.getElementById('ring-explanation');
+
+      if (topRingIsRepelling) {
+        l.innerText = "S";
+        r.innerText = "N";
+        topRing.className = "absolute bottom-40 w-28 h-10 bg-gradient-to-r from-blue-600 to-red-600 rounded-2xl border-2 border-white/40 shadow-2xl flex items-center justify-around text-white font-bold text-xs transition-all duration-700 animate-float";
+        exp.innerHTML = "✨ <strong>Observation:</strong> Like poles face each other (S facing S). The repulsive force pushes upward, counteracting gravity so the ring FLOATS!";
+      } else {
+        l.innerText = "N";
+        r.innerText = "S";
+        topRing.className = "absolute bottom-22 w-28 h-10 bg-gradient-to-r from-red-600 to-blue-600 rounded-2xl border-2 border-white/40 shadow-2xl flex items-center justify-around text-white font-bold text-xs transition-all duration-700";
+        exp.innerHTML = "🧲 <strong>Observation:</strong> Unlike poles face each other (N facing S). Magnetic attraction pulls the top ring down until it snaps against the base ring!";
+      }
+    }
+
+    // --- EXPERIMENT 3 LOGIC (COMPASS) ---
+    function spinCompass() {
+      const needle = document.getElementById('compass-needle');
+      const randomDeg = 720 + Math.floor(Math.random() * 360);
+      needle.style.transform = `rotate(${randomDeg}deg)`;
+      setTimeout(() => {
+        needle.style.transform = `rotate(0deg)`;
+      }, 1200);
+    }
+
+    // --- GAMES LOGIC ---
+    const sorterItems = [
+      { name: "Steel Paperclip", material: "Steel", isMagnetic: true, icon: "📎" },
+      { name: "Copper Wire", material: "Copper Metal", isMagnetic: false, icon: "🔌" },
+      { name: "Iron Nail", material: "Iron", isMagnetic: true, icon: "📌" },
+      { name: "Aluminium Foil", material: "Aluminium Metal", isMagnetic: false, icon: "📄" },
+      { name: "Lodestone", material: "Natural Magnetite", isMagnetic: true, icon: "🪨" },
+      { name: "Wooden Pencil", material: "Wood", isMagnetic: false, icon: "✏️" },
+      { name: "Nickel Coin", material: "Nickel", isMagnetic: true, icon: "🪙" },
+      { name: "Glass Cup", material: "Glass", isMagnetic: false, icon: "🥛" }
+    ];
+
+    let currentSorterIdx = 0;
+    let sorterScore = 0;
+
+    function renderSorterItem() {
+      if (currentSorterIdx >= sorterItems.length) {
+        document.getElementById('sorter-item-name').innerText = "Game Completed! 🎉";
+        document.getElementById('sorter-item-material').innerText = `Final Score: ${sorterScore} / ${sorterItems.length}`;
+        document.getElementById('sorter-item-icon').innerText = "🏆";
+        return;
+      }
+
+      const item = sorterItems[currentSorterIdx];
+      document.getElementById('sorter-item-name').innerText = item.name;
+      document.getElementById('sorter-item-material').innerText = `Made of: ${item.material}`;
+      document.getElementById('sorter-item-icon').innerText = item.icon;
+      document.getElementById('sorter-feedback').innerText = "";
+    }
+
+    function classifyItem(userSaysMagnetic) {
+      if (currentSorterIdx >= sorterItems.length) return;
+      const item = sorterItems[currentSorterIdx];
+      const fb = document.getElementById('sorter-feedback');
+
+      if (userSaysMagnetic === item.isMagnetic) {
+        sorterScore++;
+        fb.innerText = `Correct! ${item.name} is ${item.isMagnetic ? 'Magnetic' : 'Non-Magnetic'}.`;
+        fb.className = "text-center font-bold text-sm h-6 text-emerald-600";
+      } else {
+        fb.innerText = `Incorrect. ${item.name} (${item.material}) is ${item.isMagnetic ? 'Magnetic' : 'Non-Magnetic'}.`;
+        fb.className = "text-center font-bold text-sm h-6 text-rose-600";
+      }
+
+      document.getElementById('sorter-score').innerText = sorterScore;
+      currentSorterIdx++;
+      setTimeout(renderSorterItem, 1200);
+    }
+
+    // --- SPELLING BEE GAME ---
+    const beeWords = [
+      { word: "LODESTONE", clue: "A natural magnet discovered in ancient times." },
+      { word: "ALUMINIUM", clue: "A non-magnetic metal commonly used in drink cans." },
+      { word: "ATTRACT", clue: "The force that pulls magnets towards each other." },
+      { word: "REPEL", clue: "The force pushing two like magnetic poles apart." },
+      { word: "COMPASS", clue: "A navigation tool with a magnetic needle pointing North-South." }
+    ];
+
+    let beeIdx = 0;
+    let beeScore = 0;
+
+    function renderBeeWord() {
+      if (beeIdx >= beeWords.length) {
+        document.getElementById('bee-clue').innerText = "Congratulations! You completed the Spelling Bee! 🐝🏆";
+        document.getElementById('bee-input').classList.add('hidden');
+        return;
+      }
+      document.getElementById('bee-clue').innerText = beeWords[beeIdx].clue;
+      document.getElementById('bee-input').value = "";
+      document.getElementById('bee-feedback').innerText = "";
+    }
+
+    function speakBeeWord() {
+      const target = beeWords[beeIdx].word;
+      if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance(target);
+        msg.rate = 0.8;
+        window.speechSynthesis.speak(msg);
+      }
+    }
+
+    function submitBeeSpelling() {
+      if (beeIdx >= beeWords.length) return;
+      const input = document.getElementById('bee-input').value.trim().toUpperCase();
+      const target = beeWords[beeIdx].word;
+      const fb = document.getElementById('bee-feedback');
+
+      if (input === target) {
+        beeScore += 10;
+        fb.innerText = "✨ Correct Spelling! +10 Points";
+        fb.className = "font-bold text-sm h-6 text-emerald-600";
+        document.getElementById('bee-score').innerText = beeScore;
+        beeIdx++;
+        setTimeout(renderBeeWord, 1200);
+      } else {
+        fb.innerText = `❌ Oops! Correct spelling was: ${target}`;
+        fb.className = "font-bold text-sm h-6 text-rose-600";
+      }
+    }
+
+    function showGame(game) {
+      if (game === 'sorter') {
+        document.getElementById('game-sorter-box').classList.remove('hidden');
+        document.getElementById('game-spelling-box').classList.add('hidden');
+        document.getElementById('btn-game-sorter').className = "px-4 py-2 bg-emerald-700 text-white font-bold text-sm rounded-xl shadow";
+        document.getElementById('btn-game-spelling').className = "px-4 py-2 bg-slate-100 text-slate-700 font-bold text-sm rounded-xl hover:bg-slate-200";
+      } else {
+        document.getElementById('game-sorter-box').classList.add('hidden');
+        document.getElementById('game-spelling-box').classList.remove('hidden');
+        document.getElementById('btn-game-spelling').className = "px-4 py-2 bg-teal-700 text-white font-bold text-sm rounded-xl shadow";
+        document.getElementById('btn-game-sorter').className = "px-4 py-2 bg-slate-100 text-slate-700 font-bold text-sm rounded-xl hover:bg-slate-200";
+      }
+    }
+
+    // Initialize App
+    window.onload = () => {
+      renderCard();
+      renderSorterItem();
+      renderBeeWord();
+    };
+  </script>
+</body>
+</html>
