@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnet Investigation Lab: Activity 6.3</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        .font-fun {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        .magnet-pole-n {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        .magnet-pole-s {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        .metal-casing {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .pulse-magnet {
+            animation: pulse-ring 2s infinite ease-in-out;
+        }
+        .test-magnet { transition: transform .45s ease, box-shadow .25s ease; transform-origin: center; }
+        .casing-a { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .casing-b { background: linear-gradient(135deg, #10b981, #059669); }
+        .casing-c { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <header class="bg-indigo-700 text-white shadow-lg p-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white text-indigo-700 p-2.5 rounded-2xl text-2xl font-bold shadow-md">🧲</div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight font-fun">Magnet Investigation Lab</h1>
+                    <p class="text-xs text-indigo-200">Activity 6.3 (Part C): Magnets on the Move</p>
+                </div>
+            </div>
+
+            <!-- Global Accessibility & Read Aloud Toolbar -->
+            <div class="flex items-center space-x-2 bg-indigo-800/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-indigo-500/40 text-sm">
+                <span class="text-xs font-semibold text-indigo-200 flex items-center gap-1">
+                    <span class="animate-pulse">🔊</span> Audio Reader:
+                </span>
+                <button id="tts-toggle-btn" onclick="toggleAutoRead()" class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg text-xs flex items-center gap-1 transition-all shadow-sm">
+                    <span id="tts-status-icon">✓</span> <span id="tts-status-text">Auto-On</span>
+                </button>
+                <button id="tts-speed-btn" onclick="toggleSpeechRate()" class="px-2 py-1 bg-indigo-600 hover:bg-indigo-500 text-indigo-100 rounded-lg text-xs font-medium transition-all" title="Toggle Reading Speed">
+                    <span id="tts-speed-text">🐢 Slow</span>
+                </button>
+                <button onclick="stopSpeech()" class="p-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all" title="Stop Audio">
+                    ⏹️ <span class="sr-only">Stop Audio</span>
+                </button>
+            </div>
+
+            <!-- Student Profile Summary Badge -->
+            <div class="flex items-center gap-2">
+                <button onclick="openProfileModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold border border-indigo-400 flex items-center gap-2 transition-all shadow-sm">
+                    <span>👤 <span id="studentDisplay">Guest Student (P3)</span></span>
+                    <span class="text-[10px] bg-indigo-800 px-1.5 py-0.5 rounded">Edit</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-[72px] z-40">
+        <div class="max-w-7xl mx-auto px-4 flex items-center overflow-x-auto custom-scrollbar space-x-2 py-2">
+            <button id="tab-sim" onclick="switchTab('sim')" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-indigo-700 text-white shadow-sm flex items-center gap-2">
+                🧪 Virtual Lab Bench
+            </button>
+            <button id="tab-guided" onclick="switchTab('guided')" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2">
+                🟢 Pictorial Aids
+            </button>
+            <button id="tab-inquiry" onclick="switchTab('inquiry')" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2">
+                🟣 Inquiry Challenge
+            </button>
+            <button id="tab-games" onclick="switchTab('games')" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2">
+                🎮 Mini-Games & Physics Maze <span id="gamesLockIcon" class="text-xs">🔒</span>
+            </button>
+            <button id="tab-quiz" onclick="switchTab('quiz')" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2">
+                ❓ Mini-Quiz
+            </button>
+            <button id="tab-summary" onclick="switchTab('summary')" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2">
+                📊 Report & Data Submission
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full space-y-6">
+
+        <!-- ================= TAB 1: VIRTUAL LAB BENCH ================= -->
+        <section id="section-sim" class="tab-content space-y-6">
+            <div class="bg-white rounded-3xl p-5 md:p-7 shadow-md border border-slate-200 space-y-6">
+                
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-1 bg-indigo-100 text-indigo-800 text-xs font-bold rounded-lg uppercase">Interactive Experiment</span>
+                            <span class="text-xs text-slate-500">Activity 6.3 Part C Workbench</span>
+                        </div>
+                        <h2 class="text-2xl font-extrabold text-slate-900 mt-1 font-fun">Virtual Testing Bench</h2>
+                        <p class="text-xs md:text-sm text-slate-600">Test how your Bar Magnet interacts with Object A, Object B, and Object C in plastic casings.</p>
+                    </div>
+                    <button onclick="speakText('Welcome to the Virtual Testing Bench! Select North or South pole on your magnet, then choose Object A, B, or C to test.')" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl text-xs flex items-center gap-2 transition-all self-start md:self-auto border border-indigo-200">
+                        🔊 Read Instructions
+                    </button>
+                </div>
+
+                <!-- Interactive Testing Workbench Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- Left Control Panel: Magnet Pole & Object Selector -->
+                    <div class="lg:col-span-5 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-5">
+                        
+                        <!-- Step 1: Select Active Pole of Bar Magnet -->
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+                                1️⃣ Select Bar Magnet Testing Pole:
+                            </label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button id="poleBtnN" onclick="selectPole('N')" class="py-3 px-4 rounded-xl font-extrabold text-white magnet-pole-n shadow-md flex items-center justify-center gap-2 border-2 border-transparent transition-all ring-4 ring-amber-400">
+                                    <span>🔴 North (N) Pole</span>
+                                </button>
+                                <button id="poleBtnS" onclick="selectPole('S')" class="py-3 px-4 rounded-xl font-extrabold text-white magnet-pole-s shadow-md flex items-center justify-center gap-2 border-2 border-transparent transition-all">
+                                    <span>🔵 South (S) Pole</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Choose Object in Casing -->
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+                                2️⃣ Select Cased Object to Test:
+                            </label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button id="objBtnA" onclick="selectObject('A')" class="py-3 px-2 border-2 border-indigo-600 bg-indigo-50 text-indigo-900 font-bold rounded-xl text-xs flex flex-col items-center gap-1 shadow-sm transition-all">
+                                    <span class="text-xl">📦</span>
+                                    <span>Object A</span>
+                                </button>
+                                <button id="objBtnB" onclick="selectObject('B')" class="py-3 px-2 border-2 border-slate-200 hover:border-indigo-400 text-slate-700 font-bold rounded-xl text-xs flex flex-col items-center gap-1 transition-all">
+                                    <span class="text-xl">📦</span>
+                                    <span>Object B</span>
+                                </button>
+                                <button id="objBtnC" onclick="selectObject('C')" class="py-3 px-2 border-2 border-slate-200 hover:border-indigo-400 text-slate-700 font-bold rounded-xl text-xs flex flex-col items-center gap-1 transition-all">
+                                    <span class="text-xl">📦</span>
+                                    <span>Object C</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Trigger Interaction Buttons for End 1 and End 2 -->
+                        <div class="pt-2 border-t border-slate-200">
+                            <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+                                3️⃣ Bring Active Pole Near Object End:
+                            </label>
+                            <div class="grid grid-cols-1 gap-1">
+                                <button onclick="triggerInteraction()" class="py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 active:scale-95">
+                                    <span>Test</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div class="bg-indigo-900 text-white p-3 rounded-xl text-xs font-mono flex items-center justify-between">
+                            <span>Active Setup:</span>
+                            <span id="activeSetupText" class="font-bold text-amber-300">Pole N • Object A • End 1</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Visual Stage Simulator -->
+                    <div class="lg:col-span-7 bg-slate-900 rounded-2xl p-6 text-white min-h-[340px] flex flex-col justify-between relative overflow-hidden shadow-inner border border-slate-800">
+                        
+                        <!-- Top Stage Header & Force Indicator Badge -->
+                        <div class="flex items-center justify-between z-10">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Simulation Viewport</span>
+                            <span id="simStatusBadge" class="bg-slate-800 text-slate-300 px-3 py-1 rounded-full text-xs font-semibold border border-slate-700">
+                                Ready for testing
+                            </span>
+                        </div>
+
+                        <!-- Dynamic Animated Visual Magnet Workbench Area -->
+                        <div class="my-8 flex items-center justify-center gap-4 md:gap-8 relative z-10">
+                            
+                            <!-- Held Bar Magnet -->
+                            <div class="flex flex-col items-center">
+                                <span class="text-[10px] text-slate-400 font-bold mb-1">Testing Bar Magnet</span>
+                                <div id="testingMagnet" class="test-magnet w-28 md:w-36 h-12 rounded-xl overflow-hidden flex shadow-2xl border-2 border-white/20">
+                                    <div id="simPoleN" class="w-1/2 magnet-pole-n flex items-center justify-center font-black text-white text-sm">N</div>
+                                    <div id="simPoleS" class="w-1/2 magnet-pole-s flex items-center justify-center font-black text-white text-sm opacity-50">S</div>
+                                </div>
+                                <span id="activePoleLabel" class="text-xs font-bold text-red-400 mt-1">North (N) Active</span>
+                            </div>
+
+                            <!-- Force Indicator Arrows / Reaction Display -->
+                            <div class="flex flex-col items-center justify-center min-w-32 md:min-w-36 text-center">
+                                <span id="forceArrow" class="text-sm font-extrabold text-slate-500 transition-all opacity-0 duration-300 whitespace-nowrap">
+                                    ➡️ ATTRACTS ⬅️
+                                </span>
+                            </div>
+
+                            <!-- Target Cased Object -->
+                            <div id="targetObjectVisual" class="flex flex-col items-center transition-transform duration-500 ease-out">
+                                <span id="targetObjName" class="text-[10px] text-slate-400 font-bold mb-1">OBJECT A</span>
+                                <div id="targetCasing" class="w-28 md:w-36 h-12 rounded-xl casing-a border-2 border-amber-300 flex items-center justify-between px-2 text-white font-bold text-xs shadow-2xl relative" style="transition: transform 0.55s ease-in-out; transform: rotate(0deg);">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Bottom Explanation Feedback Box -->
+                        <div class="bg-slate-800/90 p-4 rounded-xl border border-slate-700 z-10 flex items-start gap-3">
+                            <button onclick="speakSimResult()" class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs shrink-0" title="Read Result">🔊</button>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-300 uppercase">Interaction Observation:</h4>
+                                <p id="simResultDesc" class="text-xs md:text-sm text-slate-200 mt-0.5">
+                                    Select a pole and click <strong>Test</strong> to observe if the object attracts, repels, or stays still!
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Observations & Conclusion Table -->
+                <div class="pt-4 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h3 class="text-lg font-bold text-slate-900 font-fun">Observation & Conclusion Table</h3>
+                        <button onclick="checkSimTableAnswers()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                            <span>✓</span> <span>Check Observations</span>
+                        </button>
+                    </div>
+                    <div id="simTableFeedback" class="hidden p-3 text-xs rounded-xl" aria-live="polite"></div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full border-collapse border border-slate-300 text-xs md:text-sm bg-white rounded-xl overflow-hidden shadow-sm">
+                            <thead class="bg-indigo-50 text-indigo-900 font-bold">
+                                <tr>
+                                    <th class="border border-slate-300 p-3 text-left w-1/4">Object</th>
+                                    <th class="border border-slate-300 p-3 text-left w-1/2">Observations</th>
+                                    <th class="border border-slate-300 p-3 text-left w-1/4">Conclusion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="border border-slate-300 p-3 font-bold text-slate-800">A</td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="sim_obs_A" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                            <option value="">-- Select Observation --</option>
+                                            <option value="attracted_both">Attracted to both poles of the bar magnet</option>
+                                            <option value="repelled_one">Attracted to one pole and repelled by the other pole</option>
+                                            <option value="no_reaction">Not attracted or repelled by either pole</option>
+                                        </select>
+                                    </td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="sim_con_A" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
+                                            <option value="">-- Select Conclusion --</option>
+                                            <option value="magnet">magnet</option>
+                                            <option value="magnetic">magnetic material</option>
+                                            <option value="non-magnetic">non-magnetic material</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="border border-slate-300 p-3 font-bold text-slate-800">B</td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="sim_obs_B" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                            <option value="">-- Select Observation --</option>
+                                            <option value="attracted_both">Attracted to both poles of the bar magnet</option>
+                                            <option value="repelled_one">Attracted to one pole and repelled by the other pole</option>
+                                            <option value="no_reaction">Not attracted or repelled by either pole</option>
+                                        </select>
+                                    </td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="sim_con_B" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
+                                            <option value="">-- Select Conclusion --</option>
+                                            <option value="magnet">magnet</option>
+                                            <option value="magnetic">magnetic material</option>
+                                            <option value="non-magnetic">non-magnetic material</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="border border-slate-300 p-3 font-bold text-slate-800">C</td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="sim_obs_C" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                            <option value="">-- Select Observation --</option>
+                                            <option value="attracted_both">Attracted to both poles of the bar magnet</option>
+                                            <option value="repelled_one">Attracted to one pole and repelled by the other pole</option>
+                                            <option value="no_reaction">Not attracted or repelled by either pole</option>
+                                        </select>
+                                    </td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="sim_con_C" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
+                                            <option value="">-- Select Conclusion --</option>
+                                            <option value="magnet">magnet</option>
+                                            <option value="magnetic">magnetic material</option>
+                                            <option value="non-magnetic">non-magnetic material</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: PICTORIAL AIDS ================= -->
+        <section id="section-guided" class="tab-content hidden space-y-6">
+            <!-- Pictorial Aids & Table Section -->
+            <div class="bg-white rounded-3xl p-5 md:p-7 shadow-md border border-slate-200 space-y-6">
+                <div class="border-b pb-3">
+                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 font-fun">Pictorial Aids & Investigation Steps</h2>
+                    <p class="text-xs md:text-sm text-slate-500 italic mt-1"></p>
+                </div>
+
+                <!-- Steps Diagrams -->
+                <div class="space-y-6 py-2">
+                    <!-- Step 1 -->
+                    <div class="space-y-2">
+                        <p class="font-bold text-sm text-slate-800">Step 1: Bring one of the poles of the bar magnet near object A.</p>
+                        <div class="flex items-center gap-6 p-4 bg-slate-50 rounded-xl border border-slate-200 w-fit">
+                            <div class="flex items-center border-2 border-slate-400 rounded bg-white overflow-hidden shadow-sm">
+                                <div class="w-16 h-8 bg-slate-400 flex items-center justify-center text-xs font-bold text-white border-r border-slate-300">bar</div>
+                                <div class="w-16 h-8 bg-slate-600 flex items-center justify-center text-xs font-bold text-white">magnet</div>
+                            </div>
+                            <div class="w-32 h-8 border-2 border-slate-400 rounded bg-white flex items-center justify-center text-xs font-bold text-slate-700 shadow-sm">
+                                object A
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="space-y-2">
+                        <p class="font-bold text-sm text-slate-800">Step 2: Bring the other pole of the bar magnet near object A. <span class="font-normal text-slate-600">(Do not rotate object A)</span></p>
+                        <div class="flex items-center gap-6 p-4 bg-slate-50 rounded-xl border border-slate-200 w-fit">
+                            <div class="flex items-center border-2 border-slate-400 rounded bg-white overflow-hidden shadow-sm">
+                                <div class="w-16 h-8 bg-slate-600 flex items-center justify-center text-xs font-bold text-white border-r border-slate-300">bar</div>
+                                <div class="w-16 h-8 bg-slate-400 flex items-center justify-center text-xs font-bold text-white">magnet</div>
+                            </div>
+                            <div class="w-32 h-8 border-2 border-slate-400 rounded bg-white flex items-center justify-center text-xs font-bold text-slate-700 shadow-sm">
+                                object A
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="space-y-2">
+                        <p class="font-bold text-sm text-slate-800">Step 3: Repeat the steps 1 and 2 with objects B and C.</p>
+                    </div>
+                </div>
+
+                <!-- Observations & Conclusion Table -->
+                <div class="pt-4 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h3 class="text-lg font-bold text-slate-900 font-fun">Observation & Conclusion Table</h3>
+                        <button onclick="checkGuidedTableAnswers()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                            <span>✓</span> <span>Check Observations</span>
+                        </button>
+                    </div>
+                    <div id="guidedTableFeedback" class="hidden p-3 text-xs rounded-xl" aria-live="polite"></div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full border-collapse border border-slate-300 text-xs md:text-sm bg-white rounded-xl overflow-hidden shadow-sm">
+                            <thead class="bg-indigo-50 text-indigo-900 font-bold">
+                                <tr>
+                                    <th class="border border-slate-300 p-3 text-left w-1/4">Object</th>
+                                    <th class="border border-slate-300 p-3 text-left w-1/2">Observations</th>
+                                    <th class="border border-slate-300 p-3 text-left w-1/4">Conclusion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="border border-slate-300 p-3 font-bold text-slate-800">A</td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="guided_obs_A" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                            <option value="">-- Select Observation --</option>
+                                            <option value="attracted_both">Attracted to both poles of the bar magnet</option>
+                                            <option value="repelled_one">Attracted to one pole and repelled by the other pole</option>
+                                            <option value="no_reaction">Not attracted or repelled by either pole</option>
+                                        </select>
+                                    </td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="guided_con_A" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
+                                            <option value="">-- Select Conclusion --</option>
+                                            <option value="magnet">magnet</option>
+                                            <option value="magnetic">magnetic material</option>
+                                            <option value="non-magnetic">non-magnetic material</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="border border-slate-300 p-3 font-bold text-slate-800">B</td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="guided_obs_B" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                            <option value="">-- Select Observation --</option>
+                                            <option value="attracted_both">Attracted to both poles of the bar magnet</option>
+                                            <option value="repelled_one">Attracted to one pole and repelled by the other pole</option>
+                                            <option value="no_reaction">Not attracted or repelled by either pole</option>
+                                        </select>
+                                    </td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="guided_con_B" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
+                                            <option value="">-- Select Conclusion --</option>
+                                            <option value="magnet">magnet</option>
+                                            <option value="magnetic">magnetic material</option>
+                                            <option value="non-magnetic">non-magnetic material</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="border border-slate-300 p-3 font-bold text-slate-800">C</td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="guided_obs_C" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                            <option value="">-- Select Observation --</option>
+                                            <option value="attracted_both">Attracted to both poles of the bar magnet</option>
+                                            <option value="repelled_one">Attracted to one pole and repelled by the other pole</option>
+                                            <option value="no_reaction">Not attracted or repelled by either pole</option>
+                                        </select>
+                                    </td>
+                                    <td class="border border-slate-300 p-3">
+                                        <select id="guided_con_C" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
+                                            <option value="">-- Select Conclusion --</option>
+                                            <option value="magnet">magnet</option>
+                                            <option value="magnetic">magnetic material</option>
+                                            <option value="non-magnetic">non-magnetic material</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: INQUIRY CHALLENGE ================= -->
+        <section id="section-inquiry" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-5 md:p-7 shadow-md border border-purple-200 space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-purple-100 pb-4">
+                    <div>
+                        <span class="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-lg uppercase">Challenge</span>
+                        <h2 class="text-2xl font-extrabold text-purple-950 mt-1 font-fun">🟣 Inquiry Challenge</h2>
+                        <p class="text-xs md:text-sm text-slate-600">Put the investigation steps in the correct order.</p>
+                    </div>
+                    <button onclick="speakText('Inquiry Challenge. Put the seven investigation steps in the correct order. You may drag the cards or use the up and down buttons. Then check your order.')" class="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-800 font-bold rounded-xl text-xs flex items-center gap-2 border border-purple-200 self-start md:self-auto">🔊 Read Challenge</button>
+                </div>
+                <div class="bg-purple-50/60 rounded-2xl p-5 border border-purple-200 space-y-4">
+                    <div class="flex items-start gap-3"><span class="text-3xl">🧪</span><div><h3 class="text-base font-bold text-purple-950 font-fun">Arrange the Investigation Steps</h3><p class="text-xs text-purple-900 mt-1">Drag the cards into the correct sequence for testing Objects A, B and C. On touch devices or with a keyboard, use the ↑ and ↓ buttons.</p></div></div>
+                    <ol id="inquiryOrderList" class="space-y-2"><li class="inquiry-step bg-white border border-purple-200 rounded-xl p-3 flex items-start gap-3 shadow-sm" draggable="true" data-step="5"><span class="cursor-grab text-purple-400 text-lg">☰</span><span class="text-xl shrink-0" aria-hidden="true">🧠</span><span class="flex-1 text-xs md:text-sm font-semibold text-slate-800">Decide whether Object A is a magnet, magnetic material or non-magnetic material.</span><div class="flex gap-1"><button type="button" onclick="moveInquiryStep(this,-1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step up">↑</button><button type="button" onclick="moveInquiryStep(this,1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step down">↓</button></div></li>
+<li class="inquiry-step bg-white border border-purple-200 rounded-xl p-3 flex items-start gap-3 shadow-sm" draggable="true" data-step="1"><span class="cursor-grab text-purple-400 text-lg">☰</span><span class="text-xl shrink-0" aria-hidden="true">👀</span><span class="flex-1 text-xs md:text-sm font-semibold text-slate-800">Observe whether Object A is attracted, repelled or not attracted.</span><div class="flex gap-1"><button type="button" onclick="moveInquiryStep(this,-1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step up">↑</button><button type="button" onclick="moveInquiryStep(this,1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step down">↓</button></div></li>
+<li class="inquiry-step bg-white border border-purple-200 rounded-xl p-3 flex items-start gap-3 shadow-sm" draggable="true" data-step="6"><span class="cursor-grab text-purple-400 text-lg">☰</span><span class="text-xl shrink-0" aria-hidden="true">🔁</span><span class="flex-1 text-xs md:text-sm font-semibold text-slate-800">Repeat for Objects B and C.</span><div class="flex gap-1"><button type="button" onclick="moveInquiryStep(this,-1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step up">↑</button><button type="button" onclick="moveInquiryStep(this,1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step down">↓</button></div></li>
+<li class="inquiry-step bg-white border border-purple-200 rounded-xl p-3 flex items-start gap-3 shadow-sm" draggable="true" data-step="2"><span class="cursor-grab text-purple-400 text-lg">☰</span><span class="text-xl shrink-0" aria-hidden="true">🔵</span><span class="flex-1 text-xs md:text-sm font-semibold text-slate-800">Bring the South pole close to the same end of Object A.</span><div class="flex gap-1"><button type="button" onclick="moveInquiryStep(this,-1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step up">↑</button><button type="button" onclick="moveInquiryStep(this,1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step down">↓</button></div></li>
+<li class="inquiry-step bg-white border border-purple-200 rounded-xl p-3 flex items-start gap-3 shadow-sm" draggable="true" data-step="4"><span class="cursor-grab text-purple-400 text-lg">☰</span><span class="text-xl shrink-0" aria-hidden="true">📝</span><span class="flex-1 text-xs md:text-sm font-semibold text-slate-800">Record the observation.</span><div class="flex gap-1"><button type="button" onclick="moveInquiryStep(this,-1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step up">↑</button><button type="button" onclick="moveInquiryStep(this,1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step down">↓</button></div></li>
+<li class="inquiry-step bg-white border border-purple-200 rounded-xl p-3 flex items-start gap-3 shadow-sm" draggable="true" data-step="0"><span class="cursor-grab text-purple-400 text-lg">☰</span><span class="text-xl shrink-0" aria-hidden="true">🧲</span><span class="flex-1 text-xs md:text-sm font-semibold text-slate-800">Bring the North pole of the bar magnet close to one end of Object A.</span><div class="flex gap-1"><button type="button" onclick="moveInquiryStep(this,-1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step up">↑</button><button type="button" onclick="moveInquiryStep(this,1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step down">↓</button></div></li>
+<li class="inquiry-step bg-white border border-purple-200 rounded-xl p-3 flex items-start gap-3 shadow-sm" draggable="true" data-step="3"><span class="cursor-grab text-purple-400 text-lg">☰</span><span class="text-xl shrink-0" aria-hidden="true">👀</span><span class="flex-1 text-xs md:text-sm font-semibold text-slate-800">Observe whether Object A is attracted, repelled or not attracted.</span><div class="flex gap-1"><button type="button" onclick="moveInquiryStep(this,-1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step up">↑</button><button type="button" onclick="moveInquiryStep(this,1)" class="px-2 py-1 bg-slate-100 rounded text-xs" aria-label="Move step down">↓</button></div></li></ol>
+                    <div class="flex flex-wrap gap-2 justify-end pt-2"><button type="button" onclick="resetInquiryOrder()" class="px-5 py-2.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs rounded-xl">↻ Reset</button><button type="button" onclick="checkInquiryOrder()" class="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs rounded-xl shadow">✓ Check Order</button></div>
+                    <div id="inquiryOrderFeedback" class="hidden p-3 text-xs rounded-xl" aria-live="polite"></div>
+                </div>
+
+                <!-- Inquiry Challenge Put on your thinking cap: Fewest Tests -->
+                <div class="bg-indigo-50/70 rounded-2xl p-5 border border-indigo-200 space-y-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl" aria-hidden="true">🎯</span>
+                        <div class="flex-1">
+                            <h3 class="text-base font-bold text-indigo-950 font-fun">Put on your thinking cap: Fewest Tests Challenge</h3>
+                        </div>
+                        <button type="button" onclick="speakText('Put on your thinking cap: Fewest Tests Challenge. Answer the four questions.')" class="px-3 py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold rounded-xl text-xs border border-indigo-200 shrink-0">🔊 Read</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block bg-white border border-indigo-200 rounded-xl p-4">
+                            <span class="flex items-start gap-2 font-bold text-slate-800 text-xs md:text-sm"><span class="text-lg">🧲</span><span>1. ⁠If the object is repelled by one pole of magnet, what can we conclude about the object? 
+</span></span>
+                            <textarea id="fewestAns1" rows="2" class="mt-2 w-full p-3 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none" placeholder="Type your answer here..."></textarea>
+                        </label>
+                        <label class="block bg-white border border-indigo-200 rounded-xl p-4">
+                            <span class="flex items-start gap-2 font-bold text-slate-800 text-xs md:text-sm"><span class="text-lg">🚫</span><span>2. If the object is not attacted to either pole of the magnet, what can we conclude about the object?</span></span>
+                            <textarea id="fewestAns2" rows="2" class="mt-2 w-full p-3 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none" placeholder="Type your answer here..."></textarea>
+                        </label>
+                        <label class="block bg-white border border-indigo-200 rounded-xl p-4">
+                            <span class="flex items-start gap-2 font-bold text-slate-800 text-xs md:text-sm"><span class="text-lg">🔍</span><span>3. When the object is attracted to one pole of the magnet, can we conclude that the object is magnetic?  Explain your answer.</span></span>
+                            <textarea id="fewestAns3" rows="2" class="mt-2 w-full p-3 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none" placeholder="Type your answer here..."></textarea>
+                        </label>
+                        <label class="block bg-white border border-indigo-200 rounded-xl p-4">
+                            <span class="flex items-start gap-2 font-bold text-slate-800 text-xs md:text-sm"><span class="text-lg">🤔</span><span>4. ⁠Look at the steps above, can you shorten the steps so that objects A B and C are classified in the least number of steps?</span></span>
+                            <textarea id="fewestAns4" rows="2" class="mt-2 w-full p-3 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none" placeholder="Type your answer here..."></textarea>
+                        </label>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" onclick="submitFewestTestsChallenge()" class="px-5 py-2.5 bg-indigo-700 hover:bg-indigo-800 text-white font-bold text-xs rounded-xl shadow">✓ Submit My Answers</button>
+                    </div>
+                    <div id="fewestTestsFeedback" class="hidden p-3 text-xs rounded-xl" aria-live="polite"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: MINI-GAMES & PHYSICS MAZE ================= -->
+        <section id="section-games" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-5 md:p-7 shadow-md border border-slate-200 space-y-6">
+                
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
+                    <div>
+                        <span class="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-lg uppercase">Interactive Physics & Arcade</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900 mt-1 font-fun">🎮 Magnet Science Mini-Games</h2>
+                        <p class="text-xs md:text-sm text-slate-600">Test your reflexes and feel magnetic repulsion forces in action!</p>
+                    </div>
+                    <button onclick="speakText('Mini Games: Play Magnet Sorting Rush or experience magnetic repulsion forces in the Pole Pusher Maze!')" class="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-xl text-xs flex items-center gap-2 border border-amber-200 self-start md:self-auto">
+                        🔊 Read Game Rules
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Game 1: Magnet Sorting Rush -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-extrabold text-slate-900 text-base font-fun">🎯 Game 1: Sorting Rush</h3>
+                                <span class="text-xs font-mono font-bold bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded-lg">Score: <span id="game1Score">0</span></span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">Classify objects as Magnet, Magnetic Material, or Non-Magnetic!</p>
+                        </div>
+
+                        <!-- Game Display Box -->
+                        <div id="game1Card" class="bg-white p-6 rounded-2xl border-2 border-indigo-200 text-center space-y-4 shadow-sm min-h-[160px] flex flex-col justify-center items-center">
+                            <div id="game1StartScreen">
+                                <span class="text-4xl block mb-2">🧲</span>
+                                <button onclick="startSortingGame()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl shadow transition-all">
+                                    Start Sorting Game!
+                                </button>
+                            </div>
+                            <div id="game1ActiveScreen" class="hidden space-y-3 w-full">
+                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Classify This Object:</span>
+                                <div id="game1Item" class="text-xl font-extrabold text-indigo-900">Steel Paperclip</div>
+                                <div id="game1Feedback" class="hidden p-2.5 rounded-xl text-xs font-bold" aria-live="polite"></div>
+                            </div>
+                        </div>
+
+                        <!-- Game Buttons -->
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="answerSort('magnet')" class="py-2.5 px-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                🧲 Magnet
+                            </button>
+                            <button onclick="answerSort('magnetic')" class="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                🔩 Magnetic
+                            </button>
+                            <button onclick="answerSort('nonmagnetic')" class="py-2.5 px-2 bg-slate-600 hover:bg-slate-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                ✏️ Non-Magnetic
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Game 2: Pole Pusher Repulsion Maze (Canvas Physics) -->
+                    <div class="bg-slate-900 p-5 rounded-2xl text-white flex flex-col justify-between space-y-4 border border-slate-800">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-extrabold text-amber-400 text-base font-fun">🛑 Game 2: Repulsion Pusher Maze</h3>
+                                <button onclick="initMazeGame()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">Reset Game</button>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">
+                                Move your cursor (North Pole) near the North Pole puck to push it into the GOAL using <strong>magnetic repulsion</strong>!
+                            </p>
+                        </div>
+
+                        <!-- Canvas Box -->
+                        <div class="relative w-full aspect-video bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+                            <canvas id="mazeCanvas" width="340" height="180" class="w-full h-full cursor-none"></canvas>
+                        </div>
+
+                        <p class="text-[10px] text-slate-500 text-center italic">
+                            💡 Concept: Like poles repel! Notice how you don't even need to touch the puck to push it!
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: MINI-QUIZ ================= -->
+        <section id="section-quiz" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-5 md:p-7 shadow-md border border-slate-200 space-y-6">
+                
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
+                    <div>
+                        <span class="px-2.5 py-1 bg-indigo-100 text-indigo-800 text-xs font-bold rounded-lg uppercase">Concept Assessment</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900 mt-1 font-fun">❓ Magnet Concept Mini-Quiz</h2>
+                        <p class="text-xs md:text-sm text-slate-600">Test your understanding of magnet interactions and repulsion! You have <strong>one attempt</strong>. Answers will be shown after submission.</p>
+                    </div>
+                    <span id="quizScoreDisplay" class="px-4 py-2 bg-indigo-50 text-indigo-700 text-xs font-extrabold rounded-xl border border-indigo-200">
+                        Score: 0 / 5
+                    </span>
+                </div>
+
+                <div id="quizContainer" class="space-y-4">
+                    <!-- Quiz Questions rendered dynamically -->
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button id="gradeQuizBtn" onclick="gradeQuiz()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all">
+                        Grade My Quiz Now ✓
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 6: REPORT & GOOGLE SHEETS DATA SUBMISSION ================= -->
+        <section id="section-summary" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-5 md:p-7 shadow-md border border-slate-200 space-y-6">
+                
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
+                    <div>
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg uppercase">Data & Export Workbench</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900 mt-1 font-fun">📊 Student Progress & Teacher Submission</h2>
+                        <p class="text-xs md:text-sm text-slate-600">Review learning milestones, copy report data, or submit directly to Teacher's Google Sheet!</p>
+                    </div>
+                    <button onclick="openProfileModal()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-2">
+                        ✏️ Change Name / Class
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Progress Card -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <h3 class="font-bold text-slate-900 text-sm font-fun">🎓 Student Profile & Mastered Aims</h3>
+                        
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Student Name:</span>
+                                <span id="repName" class="font-bold text-slate-800">Guest Student</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Class:</span>
+                                <span id="repClass" class="font-bold text-slate-800">P3</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Aim Understanding:</span>
+                                <span id="repStatus" class="font-bold text-amber-600">⏳ In Progress</span>
+                            </div>
+                        </div>
+
+                        <div id="milestonesList" class="space-y-2 text-xs">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Submission Controls Card -->
+                    <div class="bg-indigo-50/70 p-5 rounded-2xl border border-indigo-200 space-y-4 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-indigo-950 text-sm font-fun">☁️ Data Collection & Submission</h3>
+                            <p class="text-xs text-indigo-900 mt-1 leading-relaxed">
+                                Hosted on GitHub Pages? Submit your lab completion data directly to your teacher's Google Sheet Webhook or download a CSV report.
+                            </p>
+                        </div>
+
+                        <div class="space-y-2 pt-2">
+                            <button onclick="submitToGoogleSheets()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-2">
+                                📤 Submit Results to Teacher's Google Sheet
+                            </button>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="downloadCSVReport()" class="py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-1">
+                                    💾 Download CSV
+                                </button>
+                                <button onclick="copyDataToClipboard()" class="py-2.5 bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-1">
+                                    📋 Copy Data
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="submissionNotice" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+                        <!-- Teacher note: configure GOOGLE_APPS_SCRIPT_URL once in the source before publishing. -->
+                        <div class="pt-3 border-t border-indigo-200 text-[11px] text-indigo-800">
+                            Teacher setup is fixed in the page source so students cannot change the submission destination.
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Student Profile Registration Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5 border border-slate-100">
+            <div class="flex items-center justify-between border-b pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🧲</span>
+                    <h3 class="text-lg font-extrabold text-slate-900 font-fun">Student Registration</h3>
+                </div>
+                <button onclick="document.getElementById('profileModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+            </div>
+
+            <form onsubmit="saveStudentProfile(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Your Full Name:</label>
+                    <input type="text" id="inputName" required class="w-full p-3 border border-slate-200 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Alex Tan">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Class / Section:</label>
+                    <input type="text" id="inputClass" required class="w-full p-3 border border-slate-200 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Primary 3 Hope">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Select Learning Group / Path:</label>
+                    <select id="inputGrouping" required class="w-full p-3 border border-slate-200 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+                        <option value="LP">Path 1 - Virtual Lab Bench</option>
+                        <option value="MP">Path 2 - Pictorial Support</option>
+                        <option value="HP">Path 3 - Inquiry Challenge</option>
+                    </select>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl shadow transition-all">
+                        Save Profile & Start Lab 🚀
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Modal Dialog (Replaces browser alert/confirm) -->
+    <div id="customModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 border border-slate-100">
+            <div id="customModalIcon" class="text-4xl">🎉</div>
+            <h3 id="customModalTitle" class="text-lg font-bold text-slate-900 font-fun">Lab Message</h3>
+            <p id="customModalBody" class="text-xs text-slate-600 leading-relaxed"></p>
+            <button onclick="closeCustomModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-all">
+                Got It!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyk6UuywFmT-ju68WV2MMdQc3QPOKyHNEodvEHjSg-Xyn-FRQ-_22mvz1tiEnKHfO4S/exec";
+
+        let studentProfile = {
+            name: "Guest Student",
+            studentClass: "P3",
+            grouping: "MP",
+            track: "Student Choice",
+            observationsCorrect: false,
+            conclusionCorrect: false,
+            inquiryMastered: false,
+            quizScore: 0,
+            quizSubmitted: false
+        };
+
+        let labState = {
+            selectedPole: 'N',
+            selectedObject: 'A',
+            targetEnd: 'end1'
+        };
+
+        const objectProperties = {
+            'A': { name: 'Object A', type: 'magnetic', hiddenMaterial: 'Iron Bar (Magnetic Material)' },
+            'B': { name: 'Object B', type: 'nonmagnetic', hiddenMaterial: 'Plastic / Wooden Bar (Non-Magnetic Material)' },
+            'C': { name: 'Object C', type: 'magnet', hiddenMaterial: 'Bar Magnet (North & South Poles)' }
+        };
+
+        const expectedAnswers = {
+            'A': { obs: 'attracted_both', con: 'magnetic' },
+            'B': { obs: 'no_reaction', con: 'non-magnetic' },
+            'C': { obs: 'repelled_one', con: 'magnet' }
+        };
+
+        const quizQuestions = [
+            {
+                q: "1. What is the ONLY sure test to confirm if an object is a magnet?",
+                options: [
+                    "It attracts iron paperclips.",
+                    "It is repelled by another magnet.",
+                    "It is attracted to the North pole of a magnet.",
+                    "It picks up small metal objects."
+                ],
+                correct: 1,
+                exp: "Repulsion is the ONLY sure test! Magnetic materials (like iron) are attracted to magnets, but ONLY another magnet can be repelled."
+            },
+            {
+                q: "2. When two North poles of bar magnets face each other, they will:",
+                options: [
+                    "Attract each other",
+                    "Repel (push away) each other",
+                    "Have no reaction",
+                    "Stick together permanently"
+                ],
+                correct: 1,
+                exp: "Like poles repel each other (North repels North, South repels South)."
+            },
+            {
+                q: "3. Object A in a plastic casing is attracted to BOTH the North pole and South pole of a magnet. What is Object A?",
+                options: [
+                    "A bar magnet",
+                    "A non-magnetic material",
+                    "A magnetic material (like iron or steel)",
+                    "A plastic ruler"
+                ],
+                correct: 2,
+                exp: "Magnetic materials are attracted to BOTH poles of a magnet, but NEVER repelled."
+            },
+            {
+                q: "4. Object B is brought near both poles of a magnet and shows NO attraction or repulsion. What is Object B?",
+                options: [
+                    "A magnetic material",
+                    "A magnet",
+                    "A non-magnetic material (like plastic or wood)",
+                    "An iron nail"
+                ],
+                correct: 2,
+                exp: "Non-magnetic materials experience no magnetic forces of attraction or repulsion."
+            },
+            {
+                q: "5. Unlike poles of two magnets will:",
+                options: [
+                    "Push each other away",
+                    "Attract (pull toward) each other",
+                    "Cancel each other out",
+                    "Rotate without moving"
+                ],
+                correct: 1,
+                exp: "Unlike poles attract each other (North attracts South)."
+            }
+        ];
+
+        const ttsEngine = {
+            synth: window.speechSynthesis,
+            autoRead: true,
+            rate: 0.90,
+            voice: null,
+            queue: [],
+            speaking: false,
+
+            loadVoice() {
+                if (!this.synth) return;
+                const voices = this.synth.getVoices();
+                this.voice =
+                    voices.find(v => /en-SG/i.test(v.lang)) ||
+                    voices.find(v => /en-GB/i.test(v.lang) && /Google|Microsoft|Natural/i.test(v.name)) ||
+                    voices.find(v => /en-US/i.test(v.lang) && /Google|Microsoft|Natural/i.test(v.name)) ||
+                    voices.find(v => /^en/i.test(v.lang)) ||
+                    voices[0] || null;
+            },
+
+            clean(text) {
+                return String(text || '')
+                    .replace(/<[^>]*>/g, ' ')
+                    .replace(/[\p{Extended_Pictographic}\uFE0F]/gu, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            },
+
+            splitIntoChunks(text, maxLength = 180) {
+                const sentences = text.match(/[^.!?]+[.!?]?/g) || [text];
+                const chunks = [];
+                let current = '';
+                sentences.forEach(sentence => {
+                    sentence = sentence.trim();
+                    if (!sentence) return;
+                    if ((current + ' ' + sentence).trim().length <= maxLength) {
+                        current = (current + ' ' + sentence).trim();
+                    } else {
+                        if (current) chunks.push(current);
+                        current = sentence;
+                    }
+                });
+                if (current) chunks.push(current);
+                return chunks;
+            },
+
+            speak(text) {
+                if (!this.synth) return;
+                const cleanText = this.clean(text);
+                if (!cleanText) return;
+                this.stop();
+                this.loadVoice();
+                this.queue = this.splitIntoChunks(cleanText);
+                this.speakNext();
+            },
+
+            speakNext() {
+                if (!this.synth || this.queue.length === 0) {
+                    this.speaking = false;
+                    return;
+                }
+                this.speaking = true;
+                const utterance = new SpeechSynthesisUtterance(this.queue.shift());
+                utterance.rate = this.rate;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                if (this.voice) utterance.voice = this.voice;
+                utterance.onend = () => this.speakNext();
+                utterance.onerror = () => {
+                    this.speaking = false;
+                    this.queue = [];
+                };
+                this.synth.speak(utterance);
+            },
+
+            stop() {
+                this.queue = [];
+                this.speaking = false;
+                if (this.synth) this.synth.cancel();
+            }
+        };
+
+        if (window.speechSynthesis) {
+            ttsEngine.loadVoice();
+            window.speechSynthesis.onvoiceschanged = () => ttsEngine.loadVoice();
+        }
+
+        function speakText(text) { ttsEngine.speak(text); }
+        function stopSpeech() { ttsEngine.stop(); }
+
+        function toggleAutoRead() {
+            ttsEngine.autoRead = !ttsEngine.autoRead;
+            document.getElementById('tts-status-text').innerText = ttsEngine.autoRead ? "Auto-On" : "Auto-Off";
+            document.getElementById('tts-status-icon').innerText = ttsEngine.autoRead ? "✓" : "✕";
+            if (ttsEngine.autoRead) speakText("Audio reader enabled");
+        }
+
+        function toggleSpeechRate() {
+            ttsEngine.rate = ttsEngine.rate <= 0.85 ? 1.0 : 0.80;
+            document.getElementById('tts-speed-text').innerText = ttsEngine.rate > 0.85 ? "🐇 Normal" : "🐢 Slow";
+            speakText(ttsEngine.rate > 0.85 ? "Normal voice speed" : "Slow voice speed");
+        }
+
+        function isMandatoryCompleted() {
+            const grp = studentProfile.grouping;
+            if (grp === 'LP') {
+                return checkTableAnswersSilent('sim_obs_', 'sim_con_');
+            } else if (grp === 'MP') {
+                return checkTableAnswersSilent('guided_obs_', 'guided_con_');
+            } else if (grp === 'HP') {
+                return inquiryOrderCorrect && inquiryFewestTestsComplete;
+            }
+            return false;
+        }
+
+        function updateTabAccessibility() {
+            const grp = studentProfile.grouping;
+            const tabSim = document.getElementById('tab-sim');
+            const tabGuided = document.getElementById('tab-guided');
+            const tabInquiry = document.getElementById('tab-inquiry');
+            const tabGames = document.getElementById('tab-games');
+            const lockIcon = document.getElementById('gamesLockIcon');
+
+            [tabSim, tabGuided, tabInquiry].forEach(tab => {
+                if (tab) {
+                    tab.classList.remove('opacity-50', 'cursor-not-allowed');
+                    tab.disabled = false;
+                }
+            });
+
+            if (grp === 'LP') {
+                if (tabGuided) { tabGuided.classList.add('opacity-50', 'cursor-not-allowed'); tabGuided.disabled = true; }
+                if (tabInquiry) { tabInquiry.classList.add('opacity-50', 'cursor-not-allowed'); tabInquiry.disabled = true; }
+            } else if (grp === 'MP') {
+                if (tabSim) { tabSim.classList.add('opacity-50', 'cursor-not-allowed'); tabSim.disabled = true; }
+                if (tabInquiry) { tabInquiry.classList.add('opacity-50', 'cursor-not-allowed'); tabInquiry.disabled = true; }
+            } else if (grp === 'HP') {
+                if (tabSim) { tabSim.classList.add('opacity-50', 'cursor-not-allowed'); tabSim.disabled = true; }
+                if (tabGuided) { tabGuided.classList.add('opacity-50', 'cursor-not-allowed'); tabGuided.disabled = true; }
+            }
+
+            const gamesUnlocked = isMandatoryCompleted();
+            if (tabGames) {
+                if (gamesUnlocked) {
+                    tabGames.classList.remove('opacity-50', 'cursor-not-allowed');
+                    tabGames.disabled = false;
+                    if (lockIcon) lockIcon.innerText = "🔓";
+                } else {
+                    tabGames.classList.add('opacity-50', 'cursor-not-allowed');
+                    tabGames.disabled = true;
+                    if (lockIcon) lockIcon.innerText = "🔒";
+                }
+            }
+        }
+
+        function switchTab(tabId) {
+            const grp = studentProfile.grouping;
+            if (grp === 'LP' && (tabId === 'guided' || tabId === 'inquiry')) {
+                showCustomModal("Tab Locked", "This section is disabled for your current learning path.", "🔒");
+                return;
+            }
+            if (grp === 'MP' && (tabId === 'sim' || tabId === 'inquiry')) {
+                showCustomModal("Tab Locked", "This section is disabled for your current learning path.", "🔒");
+                return;
+            }
+            if (grp === 'HP' && (tabId === 'sim' || tabId === 'guided')) {
+                showCustomModal("Tab Locked", "This section is disabled for your current learning path.", "🔒");
+                return;
+            }
+            if (tabId === 'games' && !isMandatoryCompleted()) {
+                showCustomModal("Mini-Games Locked", "Please complete your mandatory activity first to unlock the mini-games!", "🔒");
+                return;
+            }
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2";
+            });
+
+            const targetSec = document.getElementById('section-' + tabId);
+            const targetBtn = document.getElementById('tab-' + tabId);
+
+            if (targetSec) targetSec.classList.remove('hidden');
+            if (targetBtn) {
+                targetBtn.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-indigo-700 text-white shadow-sm flex items-center gap-2";
+            }
+
+            updateTabAccessibility();
+
+            if (tabId === 'guided' || tabId === 'inquiry') {
+                const chosen = tabId === 'guided' ? 'Guided' : 'Inquiry';
+                if (studentProfile.track === 'Student Choice') studentProfile.track = chosen;
+                else if (!studentProfile.track.includes(chosen)) studentProfile.track = 'Guided + Inquiry';
+            }
+            if (tabId === 'games') initMazeGame();
+            if (tabId === 'summary') updateReportView();
+        }
+
+        function checkTableAnswersSilent(obsPrefix, conPrefix) {
+            let obsCorrect = true;
+            let conCorrect = true;
+            ['A', 'B', 'C'].forEach(obj => {
+                const obsVal = document.getElementById(obsPrefix + obj)?.value;
+                const conVal = document.getElementById(conPrefix + obj)?.value;
+                if (obsVal !== expectedAnswers[obj].obs) obsCorrect = false;
+                if (conVal !== expectedAnswers[obj].con) conCorrect = false;
+            });
+            return obsCorrect && conCorrect;
+        }
+
+        function checkTableAnswers(obsPrefix, conPrefix, feedbackId) {
+            const feedback = document.getElementById(feedbackId);
+            if (!feedback) return;
+            feedback.classList.remove('hidden');
+
+            let allAnswered = true;
+            let obsCorrectCount = 0;
+            let conCorrectCount = 0;
+
+            ['A', 'B', 'C'].forEach(obj => {
+                const obsVal = document.getElementById(obsPrefix + obj)?.value;
+                const conVal = document.getElementById(conPrefix + obj)?.value;
+                if (!obsVal || !conVal) allAnswered = false;
+                if (obsVal === expectedAnswers[obj].obs) obsCorrectCount++;
+                if (conVal === expectedAnswers[obj].con) conCorrectCount++;
+            });
+
+            if (!allAnswered) {
+                feedback.className = 'p-3 text-xs rounded-xl bg-amber-100 text-amber-900 font-semibold border border-amber-300';
+                feedback.innerHTML = '💡 Please select observations and conclusions for all objects (A, B, and C) before checking.';
+                if (ttsEngine.autoRead) speakText('Please select observations and conclusions for all objects before checking.');
+                return;
+            }
+
+            const isAllCorrect = obsCorrectCount === 3 && conCorrectCount === 3;
+            studentProfile.observationsCorrect = obsCorrectCount === 3;
+            studentProfile.conclusionCorrect = conCorrectCount === 3;
+
+            if (isAllCorrect) {
+                feedback.className = 'p-3 text-xs rounded-xl bg-emerald-100 text-emerald-900 font-semibold border border-emerald-300';
+                feedback.innerHTML = '🎉 <strong>Excellent!</strong> All observations and conclusions are correct!';
+                if (ttsEngine.autoRead) speakText('Excellent! All observations and conclusions are correct!');
+            } else {
+                feedback.className = 'p-3 text-xs rounded-xl bg-rose-100 text-rose-900 font-semibold border border-rose-300';
+                feedback.innerHTML = `💡 You got ${obsCorrectCount}/3 observations and ${conCorrectCount}/3 conclusions correct. Review your answers and try again!`;
+                if (ttsEngine.autoRead) speakText(`You got ${obsCorrectCount} out of 3 observations and ${conCorrectCount} out of 3 conclusions correct.`);
+            }
+
+            updateTabAccessibility();
+            updateReportView();
+        }
+
+        function checkSimTableAnswers() {
+            checkTableAnswers('sim_obs_', 'sim_con_', 'simTableFeedback');
+        }
+
+        function checkGuidedTableAnswers() {
+            checkTableAnswers('guided_obs_', 'guided_con_', 'guidedTableFeedback');
+        }
+
+        function showCustomModal(title, bodyText, icon = "🎉") {
+            document.getElementById('customModalTitle').innerText = title;
+            document.getElementById('customModalBody').innerText = bodyText;
+            document.getElementById('customModalIcon').innerText = icon;
+            document.getElementById('customModal').classList.remove('hidden');
+            if (ttsEngine.autoRead) speakText(`${title}. ${bodyText}`);
+        }
+
+        function closeCustomModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
+        function openProfileModal() {
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function saveStudentProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('inputName').value.trim();
+            const cls = document.getElementById('inputClass').value.trim();
+            const grp = document.getElementById('inputGrouping').value;
+
+            if (name && cls) {
+                studentProfile.name = name;
+                studentProfile.studentClass = cls;
+                studentProfile.grouping = grp;
+
+                document.getElementById('studentDisplay').innerText = `${name} (${cls}) [${grp}]`;
+                document.getElementById('profileModal').classList.add('hidden');
+
+                if (grp === 'LP') switchTab('sim');
+                else if (grp === 'MP') switchTab('guided');
+                else if (grp === 'HP') switchTab('inquiry');
+
+                updateTabAccessibility();
+            }
+        }
+
+        function resetInteractionDisplay() {
+            const visualObj = document.getElementById('targetObjectVisual');
+            const forceArrow = document.getElementById('forceArrow');
+            const badge = document.getElementById('simStatusBadge');
+            const desc = document.getElementById('simResultDesc');
+            if (visualObj) visualObj.style.transform = 'translateX(0px) translateY(-10px)';
+            if (forceArrow) { forceArrow.innerText = ''; forceArrow.className = 'text-sm font-extrabold text-slate-500 transition-all opacity-0 duration-300 whitespace-nowrap'; }
+            if (badge) { badge.className = 'bg-slate-800 text-slate-300 px-3 py-1 rounded-full text-xs font-semibold border border-slate-700'; badge.innerText = 'Ready for testing'; }
+            if (desc) desc.innerHTML = 'Click <strong>Test</strong> to run the selected test.';
+        }
+
+        function selectPole(pole) {
+            labState.selectedPole = pole;
+            const btnN = document.getElementById('poleBtnN');
+            const btnS = document.getElementById('poleBtnS');
+            const simN = document.getElementById('simPoleN');
+            const simS = document.getElementById('simPoleS');
+            const magnet = document.getElementById('testingMagnet');
+            const label = document.getElementById('activePoleLabel');
+            const isN = pole === 'N';
+            btnN.classList.toggle('ring-4', isN); btnN.classList.toggle('ring-amber-400', isN);
+            btnS.classList.toggle('ring-4', !isN); btnS.classList.toggle('ring-amber-400', !isN);
+            simN.classList.toggle('opacity-50', !isN); simS.classList.toggle('opacity-50', isN);
+            if (magnet) { magnet.style.transform = isN ? 'rotate(180deg)' : 'rotate(0deg)'; magnet.style.boxShadow = '0 0 18px rgba(251,191,36,.8)'; }
+            label.innerText = isN ? 'North (N) facing object' : 'South (S) facing object';
+            label.className = `text-xs font-bold ${isN ? 'text-red-400' : 'text-blue-400'} mt-1`;
+            resetInteractionDisplay();
+            orientTestObject('end1');
+            updateActiveSetupDisplay();
+        }
+
+        function selectObject(objKey) {
+            labState.selectedObject = objKey;
+            ['A','B','C'].forEach(k => {
+                const b=document.getElementById('objBtn'+k);
+                b.className = k===objKey ? 'py-3 px-2 border-2 border-indigo-600 bg-indigo-50 text-indigo-900 font-bold rounded-xl text-xs flex flex-col items-center gap-1 shadow-sm transition-all' : 'py-3 px-2 border-2 border-slate-200 hover:border-indigo-400 text-slate-700 font-bold rounded-xl text-xs flex flex-col items-center gap-1 transition-all';
+            });
+            document.getElementById('targetObjName').innerText=`OBJECT ${objKey}`;
+            const casing=document.getElementById('targetCasing');
+            if(casing){ casing.classList.remove('casing-a','casing-b','casing-c','metal-casing'); casing.classList.add('casing-'+objKey.toLowerCase()); }
+            resetInteractionDisplay();
+            orientTestObject('end1');
+            updateActiveSetupDisplay();
+        }
+
+        function orientTestObject(targetEnd) {
+            const casing=document.getElementById('targetCasing');
+            const turnLabel=document.getElementById('objectTurnLabel');
+            if(!casing) return;
+            labState.targetEnd=targetEnd;
+            casing.style.transform = targetEnd==='end2' ? 'rotate(180deg)' : 'rotate(0deg)';
+            if(turnLabel) turnLabel.innerText = targetEnd==='end2' ? 'End 2' : 'End 1';
+        }
+
+        function updateActiveSetupDisplay() {
+            const endText=labState.targetEnd==='end2'?'End 2':'End 1';
+            document.getElementById('activeSetupText').innerText=`Pole ${labState.selectedPole} • Object ${labState.selectedObject} • ${endText}`;
+        }
+
+        function triggerInteraction() {
+	    const targetEnd = 'end1';
+            orientTestObject(targetEnd);
+            updateActiveSetupDisplay();
+            const pole=labState.selectedPole, objKey=labState.selectedObject, obj=objectProperties[objKey];
+            const visualObj=document.getElementById('targetObjectVisual');
+            const forceArrow=document.getElementById('forceArrow');
+            const badge=document.getElementById('simStatusBadge');
+            const desc=document.getElementById('simResultDesc');
+            let action='none';
+            if(obj.type==='magnetic') action='attract';
+            else if(obj.type==='magnet'){ const endPole=targetEnd==='end1'?'N':'S'; action=(pole===endPole)?'repel':'attract'; }
+            if(action==='attract'){
+                visualObj.style.transform = window.innerWidth >= 768 ? 'translateX(-210px) translateY(-10px)' : 'translateX(-150px) translateY(-10px)';
+                forceArrow.innerText=''; forceArrow.className='text-xs font-extrabold text-emerald-400 opacity-100 transition-all whitespace-nowrap';
+                badge.className='bg-emerald-900 text-emerald-200 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-700'; badge.innerText='Result: Magnetic Attraction!';
+                desc.innerText=`When Pole ${pole} is brought near Object ${objKey}, it ATTRACTS (pulls toward magnet)!`;
+            } else if(action==='repel'){
+                visualObj.style.transform='translateX(55px) translateY(-10px)';
+                forceArrow.innerText='⬅️ REPELS ➡️'; forceArrow.className='text-xs font-extrabold text-red-400 opacity-100 transition-all whitespace-nowrap';
+                badge.className='bg-red-900 text-red-200 px-3 py-1 rounded-full text-xs font-semibold border border-red-700'; badge.innerText='Result: Magnetic Repulsion!';
+                desc.innerText=`When Pole ${pole} is brought near Object ${objKey}, it REPELS (pushes away)! This confirms Object ${objKey} IS A MAGNET!`;
+            } else {
+                visualObj.style.transform='translateX(0px) translateY(-10px)';
+                forceArrow.innerText='— NO INTERACTION —'; forceArrow.className='text-xs font-extrabold text-slate-400 opacity-100 transition-all whitespace-nowrap';
+                badge.className='bg-slate-800 text-slate-300 px-3 py-1 rounded-full text-xs font-semibold border border-slate-700'; badge.innerText='Result: No Interaction';
+                desc.innerText=`Object ${objKey} shows no attraction or repulsion to Pole ${pole}. It is a non-magnetic material!`;
+            }
+            if(ttsEngine.autoRead) speakText(desc.innerText);
+        }
+
+        function speakSimResult() {
+            const desc = document.getElementById('simResultDesc').innerText;
+            speakText(desc);
+        }
+
+        let inquiryOrderCorrect = false;
+        let inquiryFewestTestsComplete = false;
+
+        function updateInquiryMastery() {
+            studentProfile.inquiryMastered = inquiryOrderCorrect && inquiryFewestTestsComplete;
+            updateTabAccessibility();
+            updateReportView();
+        }
+
+        const inquiryInitialOrder = [5, 1, 6, 2, 4, 0, 3];
+
+	const inquiryCorrectOrders = [
+	    [0, 1, 2, 3, 4, 5, 6],
+	    [2, 1, 0, 3, 4, 5, 6],
+	    [0, 3, 2, 1, 4, 5, 6],
+	    [2, 3, 0, 1, 4, 5, 6]
+	];
+
+        function moveInquiryStep(button, direction) {
+            const item = button.closest('.inquiry-step');
+            const list = document.getElementById('inquiryOrderList');
+            if (!item || !list) return;
+            if (direction < 0 && item.previousElementSibling) list.insertBefore(item, item.previousElementSibling);
+            if (direction > 0 && item.nextElementSibling) list.insertBefore(item.nextElementSibling, item);
+        }
+
+        function resetInquiryOrder() {
+            const list = document.getElementById('inquiryOrderList');
+            const items = Array.from(list.querySelectorAll('.inquiry-step'));
+            inquiryInitialOrder.forEach(id => {
+                const item = items.find(el => Number(el.dataset.step) === id);
+                if (item) list.appendChild(item);
+            });
+            const feedback = document.getElementById('inquiryOrderFeedback');
+            feedback.className = 'hidden p-3 text-xs rounded-xl';
+            feedback.textContent = '';
+            inquiryOrderCorrect = false;
+            updateInquiryMastery();
+        }
+
+        function checkInquiryOrder() {
+            const list = document.getElementById('inquiryOrderList');
+            const currentOrder = Array.from(list.querySelectorAll('.inquiry-step')).map(el => Number(el.dataset.step));
+            const correct = inquiryCorrectOrders.some(correctOrder => {
+		return currentOrder.length === correctOrder.length && currentOrder.every((value, index) => value === correctOrder[index]);});
+            const feedback = document.getElementById('inquiryOrderFeedback');
+            feedback.classList.remove('hidden');
+            if (correct) {
+                inquiryOrderCorrect = true;
+                feedback.className = 'p-3 text-xs rounded-xl bg-emerald-100 text-emerald-900 font-semibold border border-emerald-300';
+                feedback.innerHTML = '🎉 <strong>Correct!</strong> You have arranged the investigation steps in the correct order.';
+                if (ttsEngine.autoRead) speakText('Correct! You have arranged the investigation steps in the correct order.');
+            } else {
+                inquiryOrderCorrect = false;
+                feedback.className = 'p-3 text-xs rounded-xl bg-amber-100 text-amber-900 font-semibold border border-amber-300';
+                feedback.innerHTML = '💡 <strong>Not quite yet.</strong> Think about what you must do before each observation, and what you should do before repeating the test for Objects B and C.';
+                if (ttsEngine.autoRead) speakText('Not quite yet. Think about what you must do before each observation.');
+            }
+            updateInquiryMastery();
+        }
+
+        function submitFewestTestsChallenge() {
+            const answers = [1,2,3].map(n => document.getElementById('fewestAns' + n).value.trim());
+            const feedback = document.getElementById('fewestTestsFeedback');
+            feedback.classList.remove('hidden');
+            if (answers.some(a => !a)) {
+                inquiryFewestTestsComplete = false;
+                feedback.className = 'p-3 text-xs rounded-xl bg-amber-100 text-amber-900 font-semibold border border-amber-300';
+                feedback.innerHTML = '💡 Please answer all three questions before submitting.';
+                if (ttsEngine.autoRead) speakText('Please answer all three questions before submitting.');
+            } else {
+                inquiryFewestTestsComplete = true;
+                feedback.className = 'p-3 text-xs rounded-xl bg-emerald-100 text-emerald-900 font-semibold border border-emerald-300';
+                feedback.innerHTML = '✅ <strong>Answers submitted.</strong> Good scientific thinking! Your teacher can review your explanations.';
+                if (ttsEngine.autoRead) speakText('Answers submitted. Good scientific thinking. Your teacher can review your explanations.');
+            }
+            updateInquiryMastery();
+        }
+
+        function initInquiryDragAndDrop() {
+            const list = document.getElementById('inquiryOrderList');
+            if (!list || list.dataset.dragReady === 'true') return;
+            list.dataset.dragReady = 'true';
+            let dragged = null;
+            list.addEventListener('dragstart', e => {
+                dragged = e.target.closest('.inquiry-step');
+                if (dragged) dragged.classList.add('opacity-50');
+            });
+            list.addEventListener('dragend', () => {
+                if (dragged) dragged.classList.remove('opacity-50');
+                dragged = null;
+            });
+            list.addEventListener('dragover', e => {
+                e.preventDefault();
+                if (!dragged) return;
+                const target = e.target.closest('.inquiry-step');
+                if (!target || target === dragged) return;
+                const rect = target.getBoundingClientRect();
+                list.insertBefore(dragged, e.clientY < rect.top + rect.height / 2 ? target : target.nextSibling);
+            });
+        }
+        setTimeout(initInquiryDragAndDrop, 0);
+
+        let sortItems = [
+            { name: "📌 Steel Paperclip", type: "magnetic" },
+            { name: "🧲 Bar Magnet", type: "magnet" },
+            { name: "✏️️ Wooden Pencil", type: "nonmagnetic" },
+            { name: "🔩 Iron Nail", type: "magnetic" },
+            { name: "🥫 Aluminium Can", type: "nonmagnetic" },
+            { name: "🪙 Copper Coin", type: "nonmagnetic" },
+            { name: "🧭 Compass Needle Magnet", type: "magnet" }
+        ];
+        let currentSortIdx = 0;
+
+        let sortingScore = 0;
+        let sortingLocked = false;
+
+        function startSortingGame() {
+            currentSortIdx = 0;
+            sortingScore = 0;
+            sortingLocked = false;
+            document.getElementById('game1Score').innerText = '0';
+            document.getElementById('game1StartScreen').classList.add('hidden');
+            document.getElementById('game1ActiveScreen').classList.remove('hidden');
+            const fb = document.getElementById('game1Feedback');
+            if (fb) fb.classList.add('hidden');
+            showSortItem();
+        }
+
+        function sortTypeLabel(type) {
+            return type === 'magnet' ? 'Magnet' : type === 'magnetic' ? 'Magnetic Material' : 'Non-Magnetic Material';
+        }
+
+        function showSortItem() {
+            if (currentSortIdx >= sortItems.length) {
+                document.getElementById('game1Item').innerText = "🎉 Game Completed!";
+                const fb = document.getElementById('game1Feedback');
+                if (fb) { fb.className='p-2.5 rounded-xl text-xs font-bold bg-indigo-100 text-indigo-900'; fb.innerText=`Final score: ${sortingScore} / ${sortItems.length * 10}`; }
+                showCustomModal("Sorting Rush Completed!", `You scored ${sortingScore} out of ${sortItems.length * 10}.`, "🎮");
+                return;
+            }
+            document.getElementById('game1Item').innerText = sortItems[currentSortIdx].name;
+            document.getElementById('game1Score').innerText = sortingScore;
+            sortingLocked = false;
+        }
+
+        function answerSort(chosenType) {
+            if (sortingLocked || currentSortIdx >= sortItems.length) return;
+            sortingLocked = true;
+            const actualType = sortItems[currentSortIdx].type;
+            const isCorrect = chosenType === actualType;
+            if (isCorrect) sortingScore += 10;
+            document.getElementById('game1Score').innerText = sortingScore;
+            const fb = document.getElementById('game1Feedback');
+            fb.className = `p-2.5 rounded-xl text-xs font-bold ${isCorrect ? 'bg-emerald-100 text-emerald-900 border border-emerald-200' : 'bg-amber-100 text-amber-900 border border-amber-200'}`;
+            fb.innerHTML = `${isCorrect ? '✓ Correct!' : '✗ Not quite.'} Correct answer: <strong>${sortTypeLabel(actualType)}</strong>`;
+            if (ttsEngine.autoRead) speakText(`${isCorrect ? 'Correct.' : 'Not quite.'} The correct answer is ${sortTypeLabel(actualType)}.`);
+            setTimeout(() => { currentSortIdx++; if (fb) fb.classList.add('hidden'); showSortItem(); }, 1600);
+        }
+
+        let mazeCanvas, ctx;
+        let playerPuck = { x: 60, y: 90, vx: 0, vy: 0, radius: 14 };
+        let goalArea = { x: 260, y: 70, w: 50, h: 50 };
+        let mousePos = { x: -100, y: -100 };
+
+        function initMazeGame() {
+            mazeCanvas = document.getElementById('mazeCanvas');
+            if (!mazeCanvas) return;
+            ctx = mazeCanvas.getContext('2d');
+
+            playerPuck = { x: 60, y: 90, vx: 0, vy: 0, radius: 14 };
+
+            mazeCanvas.onmousemove = (e) => {
+                const rect = mazeCanvas.getBoundingClientRect();
+                mousePos.x = (e.clientX - rect.left) * (mazeCanvas.width / rect.width);
+                mousePos.y = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
+            };
+
+            requestAnimationFrame(updateMazePhysics);
+        }
+
+        function updateMazePhysics() {
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, mazeCanvas.width, mazeCanvas.height);
+
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(goalArea.x, goalArea.y, goalArea.w, goalArea.h);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText('GOAL', goalArea.x + 10, goalArea.y + 30);
+
+            let dx = playerPuck.x - mousePos.x;
+            let dy = playerPuck.y - mousePos.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 70 && dist > 1) {
+                let force = (70 - dist) * 0.12;
+                playerPuck.vx += (dx / dist) * force;
+                playerPuck.vy += (dy / dist) * force;
+            }
+
+            playerPuck.x += playerPuck.vx;
+            playerPuck.y += playerPuck.vy;
+            playerPuck.vx *= 0.88;
+            playerPuck.vy *= 0.88;
+
+            if (playerPuck.x < playerPuck.radius) playerPuck.x = playerPuck.radius;
+            if (playerPuck.x > mazeCanvas.width - playerPuck.radius) playerPuck.x = mazeCanvas.width - playerPuck.radius;
+            if (playerPuck.y < playerPuck.radius) playerPuck.y = playerPuck.radius;
+            if (playerPuck.y > mazeCanvas.height - playerPuck.radius) playerPuck.y = mazeCanvas.height - playerPuck.radius;
+
+            if (mousePos.x > 0) {
+                ctx.beginPath();
+                ctx.arc(mousePos.x, mousePos.y, 10, 0, Math.PI * 2);
+                ctx.fillStyle = '#ef4444';
+                ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 9px sans-serif';
+                ctx.fillText('N', mousePos.x - 3, mousePos.y + 3);
+            }
+
+            ctx.beginPath();
+            ctx.arc(playerPuck.x, playerPuck.y, playerPuck.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ef4444';
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText('N', playerPuck.x - 4, playerPuck.y + 4);
+
+            if (playerPuck.x > goalArea.x && playerPuck.x < goalArea.x + goalArea.w &&
+                playerPuck.y > goalArea.y && playerPuck.y < goalArea.y + goalArea.h) {
+                ctx.fillStyle = '#f59e0b';
+                ctx.font = 'bold 16px sans-serif';
+                ctx.fillText('🎉 REPULSION WIN!', 90, 30);
+            } else {
+                requestAnimationFrame(updateMazePhysics);
+            }
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            if (!container) return;
+            container.innerHTML = quizQuestions.map((q, idx) => `
+                <div id="quizCard_${idx}" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                    <p class="font-bold text-xs md:text-sm text-slate-800">${q.q}</p>
+                    <div class="space-y-1.5 text-xs">
+                        ${q.options.map((opt, oIdx) => `
+                            <label id="quizLabel_${idx}_${oIdx}" class="flex items-center space-x-2 bg-white p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50 transition">
+                                <input type="radio" name="quiz_q_${idx}" value="${oIdx}" class="text-indigo-600 focus:ring-indigo-500">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="quizAnswer_${idx}" class="hidden text-xs rounded-xl p-3 bg-emerald-50 text-emerald-900 border border-emerald-200"></div>
+                </div>
+            `).join('');
+        }
+
+        function gradeQuiz() {
+            if (studentProfile.quizSubmitted) {
+                showCustomModal("Quiz Already Submitted", "The mini-quiz is limited to one attempt.", "🔒");
+                return;
+            }
+            const unanswered = quizQuestions.some((q, idx) => !document.querySelector(`input[name="quiz_q_${idx}"]:checked`));
+            if (unanswered) {
+                showCustomModal("Complete All Questions", "Please answer all 5 questions before submitting your one quiz attempt.", "✏️");
+                return;
+            }
+            let score = 0;
+            quizQuestions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="quiz_q_${idx}"]:checked`);
+                const selectedIndex = parseInt(selected.value);
+                if (selectedIndex === q.correct) score++;
+                document.querySelectorAll(`input[name="quiz_q_${idx}"]`).forEach(input => input.disabled = true);
+                q.options.forEach((opt, oIdx) => {
+                    const label = document.getElementById(`quizLabel_${idx}_${oIdx}`);
+                    if (oIdx === q.correct) label.className = 'flex items-center space-x-2 p-2.5 rounded-xl border-2 border-emerald-400 bg-emerald-50 text-emerald-900 font-semibold';
+                    else if (oIdx === selectedIndex) label.className = 'flex items-center space-x-2 p-2.5 rounded-xl border-2 border-rose-300 bg-rose-50 text-rose-900';
+                    else label.className = 'flex items-center space-x-2 p-2.5 rounded-xl border border-slate-200 bg-white text-slate-500';
+                });
+                const answer = document.getElementById(`quizAnswer_${idx}`);
+                answer.classList.remove('hidden');
+                answer.innerHTML = `<strong>Correct answer:</strong> ${q.options[q.correct]}<br><span class="font-normal">${q.exp}</span>`;
+            });
+            studentProfile.quizScore = score;
+            studentProfile.quizSubmitted = true;
+            document.getElementById('quizScoreDisplay').innerText = `Score: ${score} / ${quizQuestions.length}`;
+            const btn = document.getElementById('gradeQuizBtn');
+            if (btn) { btn.disabled = true; btn.innerText = 'Quiz Submitted 🔒'; btn.classList.add('opacity-60','cursor-not-allowed'); }
+            showCustomModal("Quiz Submitted!", `You scored ${score} out of ${quizQuestions.length}. The correct answers are now shown below each question.`, score >= 4 ? "🌟" : "👍");
+            
+            submitToGoogleSheets();
+            updateReportView();
+        }
+
+        function updateReportView() {
+            document.getElementById('repName').innerText = studentProfile.name;
+            document.getElementById('repClass').innerText = studentProfile.studentClass;
+            
+            const grp = studentProfile.grouping;
+
+            const list = document.getElementById('milestonesList');
+            const aimMastered = studentProfile.observationsCorrect && studentProfile.conclusionCorrect && studentProfile.quizScore >= 3;
+
+            document.getElementById('repStatus').innerText = aimMastered ? "✅ Aim Fully Mastered" : "⏳ In Progress";
+            document.getElementById('repStatus').className = aimMastered ? "font-bold text-emerald-600" : "font-bold text-amber-600";
+
+            list.innerHTML = `
+                <div class="flex items-center justify-between p-2 rounded bg-white border border-slate-200">
+                    <span>Virtual Lab Observations:</span>
+                    <span class="font-bold ${studentProfile.observationsCorrect ? 'text-emerald-600' : 'text-slate-400'}">${studentProfile.observationsCorrect ? 'Complete ✓' : grp === 'HP' ? '-' : 'Not Completed'}</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded bg-white border border-slate-200">
+                    <span>Classification & Conclusion:</span>
+                    <span class="font-bold ${studentProfile.conclusionCorrect ? 'text-emerald-600' : 'text-slate-400'}">${studentProfile.conclusionCorrect ? 'Complete ✓' : grp === 'HP' ? '-' : 'Not Completed'}</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded bg-white border border-slate-200">
+                    <span>Inquiry Planning Challenge:</span>
+                    <span class="font-bold ${studentProfile.inquiryMastered ? 'text-purple-600' : 'text-slate-400'}">${studentProfile.inquiryMastered ? 'Complete ✓' : grp === 'LP' ? '-' : grp === 'MP' ? '-' : 'Not Completed'}</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded bg-white border border-slate-200">
+                    <span>Concept Quiz Score:</span>
+                    <span class="font-bold text-indigo-600">${studentProfile.quizScore} / ${quizQuestions.length}</span>
+                </div>
+            `;
+        }
+
+        function downloadCSVReport() {
+            const data = [
+                ["Student Name", "Class", "Grouping", "Learning Path(s)", "Observations Correct", "Conclusion Correct", "Inquiry Mastered", "Quiz Score", "Timestamp"],
+                [studentProfile.name, studentProfile.studentClass, studentProfile.grouping, studentProfile.track, studentProfile.observationsCorrect, studentProfile.conclusionCorrect, studentProfile.inquiryMastered, studentProfile.quizScore, new Date().toLocaleString()]
+            ];
+
+            let csvContent = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Magnet_Lab_${studentProfile.name.replace(/\s+/g, '_')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function copyDataToClipboard() {
+            const text = `Student: ${studentProfile.name} (${studentProfile.studentClass}) | Group: ${studentProfile.grouping} | Learning Path(s): ${studentProfile.track} | Observations: ${studentProfile.observationsCorrect} | Conclusion: ${studentProfile.conclusionCorrect} | Quiz: ${studentProfile.quizScore}/5`;
+            const input = document.createElement('textarea');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showCustomModal("Copied!", "Student lab results copied to clipboard!", "📋");
+        }
+
+        function isGoogleAppsScriptConfigured() {
+            return GOOGLE_APPS_SCRIPT_URL &&
+                GOOGLE_APPS_SCRIPT_URL.startsWith('https://script.google.com/macros/s/') &&
+                GOOGLE_APPS_SCRIPT_URL.endsWith('/exec');
+        }
+
+        function submitToGoogleSheets() {
+            const notice = document.getElementById('submissionNotice');
+            if (notice) notice.classList.remove('hidden');
+
+            if (!studentProfile.name || studentProfile.name === 'Guest Student' ||
+                !studentProfile.studentClass || studentProfile.studentClass === 'P3') {
+                if (notice) {
+                    notice.className = "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300";
+                    notice.innerText = "Please enter your name and class before submitting.";
+                }
+                openProfileModal();
+                return;
+            }
+
+            if (!isGoogleAppsScriptConfigured()) {
+                if (notice) {
+                    notice.className = "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300";
+                    notice.innerText = "Teacher setup is incomplete: the Google Apps Script /exec URL has not been added to this HTML file yet.";
+                }
+                return;
+            }
+
+            const payload = {
+                studentName: studentProfile.name,
+                studentClass: studentProfile.studentClass,
+                grouping: studentProfile.grouping,
+                learningPath: studentProfile.track,
+                observationsCorrect: studentProfile.observationsCorrect,
+                conclusionCorrect: studentProfile.conclusionCorrect,
+                inquiryMastered: studentProfile.inquiryMastered,
+                quizScore: studentProfile.quizScore,
+                aimMastered: studentProfile.observationsCorrect && studentProfile.conclusionCorrect && studentProfile.quizScore >= 3
+            };
+
+            if (notice) {
+                notice.className = "p-3 rounded-xl text-xs font-semibold bg-blue-100 text-blue-900 border border-blue-300";
+                notice.innerText = "Sending results... Please wait.";
+            }
+
+            const formBody = new URLSearchParams();
+            Object.entries(payload).forEach(([key, value]) => formBody.append(key, String(value)));
+
+            fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: formBody.toString()
+            })
+            .then(() => {
+                if (notice) {
+                    notice.className = "p-3 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300";
+                    notice.innerText = "✅ Results sent to the teacher's Google Sheet.";
+                }
+            })
+            .catch(err => {
+                console.error('Submission error:', err);
+                if (notice) {
+                    notice.className = "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-900 border border-rose-300";
+                    notice.innerText = "❌ Results could not be sent. Please check the internet connection and try again.";
+                }
+            });
+        }
+
+        window.addEventListener('load', () => {
+            renderQuiz();
+            selectPole('N');
+            selectObject('A');
+            updateReportView();
+            openProfileModal();
+            setTimeout(() => document.getElementById('inputName')?.focus(), 100);
+        });
+    </script>
+</body>
+</html>
