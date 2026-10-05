@@ -279,9 +279,9 @@
                                     <td class="border border-slate-300 p-3">
                                         <select id="sim_con_A" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
                                             <option value="">-- Select Conclusion --</option>
-                                            <option value="magnet">magnet</option>
-                                            <option value="magnetic">magnetic material</option>
-                                            <option value="non-magnetic">non-magnetic material</option>
+                                            <option value="magnet">Magnet</option>
+                                            <option value="magnetic">Magnetic material</option>
+                                            <option value="non-magnetic">Non-magnetic material</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -298,9 +298,9 @@
                                     <td class="border border-slate-300 p-3">
                                         <select id="sim_con_B" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
                                             <option value="">-- Select Conclusion --</option>
-                                            <option value="magnet">magnet</option>
-                                            <option value="magnetic">magnetic material</option>
-                                            <option value="non-magnetic">non-magnetic material</option>
+                                            <option value="magnet">Magnet</option>
+                                            <option value="magnetic">Magnetic material</option>
+                                            <option value="non-magnetic">Non-magnetic material</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -317,9 +317,9 @@
                                     <td class="border border-slate-300 p-3">
                                         <select id="sim_con_C" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
                                             <option value="">-- Select Conclusion --</option>
-                                            <option value="magnet">magnet</option>
-                                            <option value="magnetic">magnetic material</option>
-                                            <option value="non-magnetic">non-magnetic material</option>
+                                            <option value="magnet">Magnet</option>
+                                            <option value="magnetic">Magnetic material</option>
+                                            <option value="non-magnetic">Non-magnetic material</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -408,9 +408,9 @@
                                     <td class="border border-slate-300 p-3">
                                         <select id="guided_con_A" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
                                             <option value="">-- Select Conclusion --</option>
-                                            <option value="magnet">magnet</option>
-                                            <option value="magnetic">magnetic material</option>
-                                            <option value="non-magnetic">non-magnetic material</option>
+                                            <option value="magnet">Magnet</option>
+                                            <option value="magnetic">Magnetic material</option>
+                                            <option value="non-magnetic">Non-magnetic material</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -427,9 +427,9 @@
                                     <td class="border border-slate-300 p-3">
                                         <select id="guided_con_B" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
                                             <option value="">-- Select Conclusion --</option>
-                                            <option value="magnet">magnet</option>
-                                            <option value="magnetic">magnetic material</option>
-                                            <option value="non-magnetic">non-magnetic material</option>
+                                            <option value="magnet">Magnet</option>
+                                            <option value="magnetic">Magnetic material</option>
+                                            <option value="non-magnetic">Non-magnetic material</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -446,9 +446,9 @@
                                     <td class="border border-slate-300 p-3">
                                         <select id="guided_con_C" class="w-full p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
                                             <option value="">-- Select Conclusion --</option>
-                                            <option value="magnet">magnet</option>
-                                            <option value="magnetic">magnetic material</option>
-                                            <option value="non-magnetic">non-magnetic material</option>
+                                            <option value="magnet">Magnet</option>
+                                            <option value="magnetic">Magnetic material</option>
+                                            <option value="non-magnetic">Non-magnetic material</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -734,11 +734,11 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Select Learning Group / Path:</label>
+                    <label class="block font-bold text-slate-700 mb-1">Select Learning Group:</label>
                     <select id="inputGrouping" required class="w-full p-3 border border-slate-200 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500">
-                        <option value="LP">Path 1 - Virtual Lab Bench</option>
-                        <option value="MP">Path 2 - Pictorial Support</option>
-                        <option value="HP">Path 3 - Inquiry Challenge</option>
+                        <option value="Lemon">Group 1 - Virtual Lab Bench</option>
+                        <option value="Mango">Group 2 - Pictorial Support</option>
+                        <option value="Honeydew">Group 3 - Inquiry Challenge</option>
                     </select>
                 </div>
 
@@ -765,15 +765,18 @@
 
     <script>
         const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyk6UuywFmT-ju68WV2MMdQc3QPOKyHNEodvEHjSg-Xyn-FRQ-_22mvz1tiEnKHfO4S/exec";
-
+        
         let studentProfile = {
-            name: "Guest Student",
-            studentClass: "P3",
-            grouping: "MP",
-            track: "Student Choice",
+            name: "Insert name",
+            studentClass: "Insert class",
+            grouping: "Insert grp",
             observationsCorrect: false,
             conclusionCorrect: false,
             inquiryMastered: false,
+            inquiryQ1: "Q1-Ans",
+            inquiryQ2: "Q2-Ans",
+            inquiryQ3: "Q3-Ans",
+            inquiryQ4: "Q4-Ans",
             quizScore: 0,
             quizSubmitted: false
         };
@@ -800,10 +803,9 @@
             {
                 q: "1. What is the ONLY sure test to confirm if an object is a magnet?",
                 options: [
-                    "It attracts iron paperclips.",
+                    "It attracts iron clips.",
                     "It is repelled by another magnet.",
-                    "It is attracted to the North pole of a magnet.",
-                    "It picks up small metal objects."
+                    "It is attracted to the North pole of a magnet."
                 ],
                 correct: 1,
                 exp: "Repulsion is the ONLY sure test! Magnetic materials (like iron) are attracted to magnets, but ONLY another magnet can be repelled."
@@ -811,45 +813,43 @@
             {
                 q: "2. When two North poles of bar magnets face each other, they will:",
                 options: [
-                    "Attract each other",
-                    "Repel (push away) each other",
-                    "Have no reaction",
-                    "Stick together permanently"
+                    "attract each other",
+                    "repel each other",
+                    "have no reaction"
                 ],
                 correct: 1,
                 exp: "Like poles repel each other (North repels North, South repels South)."
             },
             {
-                q: "3. Object A in a plastic casing is attracted to BOTH the North pole and South pole of a magnet. What is Object A?",
+                q: "3. An object in a plastic casing is attracted to BOTH the North pole and South pole of a magnet. What could the object be?",
                 options: [
+                    "Steel rod",
+                    "Plastic ruler",
                     "A bar magnet",
-                    "A non-magnetic material",
-                    "A magnetic material (like iron or steel)",
-                    "A plastic ruler"
+                    "Aluminium foil"
                 ],
-                correct: 2,
+                correct: 0,
                 exp: "Magnetic materials are attracted to BOTH poles of a magnet, but NEVER repelled."
             },
             {
-                q: "4. Object B is brought near both poles of a magnet and shows NO attraction or repulsion. What is Object B?",
+                q: "4. An object in a plastic casing is brought near both poles of a magnet and it is not attracted to either pole of the magnet. What could the object be?",
                 options: [
-                    "A magnetic material",
-                    "A magnet",
-                    "A non-magnetic material (like plastic or wood)",
-                    "An iron nail"
+                    "Iron nail",
+                    "Steel ruler",
+                    "A bar magnet",
+                    "Wooden spoon"
                 ],
-                correct: 2,
+                correct: 3,
                 exp: "Non-magnetic materials experience no magnetic forces of attraction or repulsion."
             },
             {
-                q: "5. Unlike poles of two magnets will:",
+                q: "5. When unlike poles of magnets are facing each other, they will:",
                 options: [
-                    "Push each other away",
-                    "Attract (pull toward) each other",
-                    "Cancel each other out",
-                    "Rotate without moving"
+                    "Not move",
+                    "repel each other",
+                    "attract each other"
                 ],
-                correct: 1,
+                correct: 2,
                 exp: "Unlike poles attract each other (North attracts South)."
             }
         ];
@@ -958,11 +958,11 @@
 
         function isMandatoryCompleted() {
             const grp = studentProfile.grouping;
-            if (grp === 'LP') {
+            if (grp === 'Lemon') {
                 return checkTableAnswersSilent('sim_obs_', 'sim_con_');
-            } else if (grp === 'MP') {
+            } else if (grp === 'Mango') {
                 return checkTableAnswersSilent('guided_obs_', 'guided_con_');
-            } else if (grp === 'HP') {
+            } else if (grp === 'Honeydew') {
                 return inquiryOrderCorrect && inquiryFewestTestsComplete;
             }
             return false;
@@ -983,13 +983,13 @@
                 }
             });
 
-            if (grp === 'LP') {
+            if (grp === 'Lemon') {
                 if (tabGuided) { tabGuided.classList.add('opacity-50', 'cursor-not-allowed'); tabGuided.disabled = true; }
                 if (tabInquiry) { tabInquiry.classList.add('opacity-50', 'cursor-not-allowed'); tabInquiry.disabled = true; }
-            } else if (grp === 'MP') {
+            } else if (grp === 'Mango') {
                 if (tabSim) { tabSim.classList.add('opacity-50', 'cursor-not-allowed'); tabSim.disabled = true; }
                 if (tabInquiry) { tabInquiry.classList.add('opacity-50', 'cursor-not-allowed'); tabInquiry.disabled = true; }
-            } else if (grp === 'HP') {
+            } else if (grp === 'Honeydew') {
                 if (tabSim) { tabSim.classList.add('opacity-50', 'cursor-not-allowed'); tabSim.disabled = true; }
                 if (tabGuided) { tabGuided.classList.add('opacity-50', 'cursor-not-allowed'); tabGuided.disabled = true; }
             }
@@ -997,6 +997,8 @@
             const gamesUnlocked = isMandatoryCompleted();
             if (tabGames) {
                 if (gamesUnlocked) {
+                    submitToGoogleSheets();
+
                     tabGames.classList.remove('opacity-50', 'cursor-not-allowed');
                     tabGames.disabled = false;
                     if (lockIcon) lockIcon.innerText = "🔓";
@@ -1010,16 +1012,17 @@
 
         function switchTab(tabId) {
             const grp = studentProfile.grouping;
-            if (grp === 'LP' && (tabId === 'guided' || tabId === 'inquiry')) {
-                showCustomModal("Tab Locked", "This section is disabled for your current learning path.", "🔒");
+
+            if (grp === 'Lemon' && (tabId === 'guided' || tabId === 'inquiry')) {
+                showCustomModal("Tab Locked", "This section is disabled for your current learning group.", "🔒");
                 return;
             }
-            if (grp === 'MP' && (tabId === 'sim' || tabId === 'inquiry')) {
-                showCustomModal("Tab Locked", "This section is disabled for your current learning path.", "🔒");
+            if (grp === 'Mango' && (tabId === 'sim' || tabId === 'inquiry')) {
+                showCustomModal("Tab Locked", "This section is disabled for your current learning group.", "🔒");
                 return;
             }
-            if (grp === 'HP' && (tabId === 'sim' || tabId === 'guided')) {
-                showCustomModal("Tab Locked", "This section is disabled for your current learning path.", "🔒");
+            if (grp === 'Honeydew' && (tabId === 'sim' || tabId === 'guided')) {
+                showCustomModal("Tab Locked", "This section is disabled for your current learning group.", "🔒");
                 return;
             }
             if (tabId === 'games' && !isMandatoryCompleted()) {
@@ -1039,14 +1042,7 @@
             if (targetBtn) {
                 targetBtn.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all bg-indigo-700 text-white shadow-sm flex items-center gap-2";
             }
-
-            updateTabAccessibility();
-
-            if (tabId === 'guided' || tabId === 'inquiry') {
-                const chosen = tabId === 'guided' ? 'Guided' : 'Inquiry';
-                if (studentProfile.track === 'Student Choice') studentProfile.track = chosen;
-                else if (!studentProfile.track.includes(chosen)) studentProfile.track = 'Guided + Inquiry';
-            }
+            
             if (tabId === 'games') initMazeGame();
             if (tabId === 'summary') updateReportView();
         }
@@ -1143,9 +1139,9 @@
                 document.getElementById('studentDisplay').innerText = `${name} (${cls}) [${grp}]`;
                 document.getElementById('profileModal').classList.add('hidden');
 
-                if (grp === 'LP') switchTab('sim');
-                else if (grp === 'MP') switchTab('guided');
-                else if (grp === 'HP') switchTab('inquiry');
+                if (grp === 'Lemon') switchTab('sim');
+                else if (grp === 'Mango') switchTab('guided');
+                else if (grp === 'Honeydew') switchTab('inquiry');
 
                 updateTabAccessibility();
             }
@@ -1308,15 +1304,19 @@
         }
 
         function submitFewestTestsChallenge() {
-            const answers = [1,2,3].map(n => document.getElementById('fewestAns' + n).value.trim());
+            const answers = [1,2,3,4].map(n => document.getElementById('fewestAns' + n).value.trim());
             const feedback = document.getElementById('fewestTestsFeedback');
             feedback.classList.remove('hidden');
             if (answers.some(a => !a)) {
                 inquiryFewestTestsComplete = false;
                 feedback.className = 'p-3 text-xs rounded-xl bg-amber-100 text-amber-900 font-semibold border border-amber-300';
-                feedback.innerHTML = '💡 Please answer all three questions before submitting.';
-                if (ttsEngine.autoRead) speakText('Please answer all three questions before submitting.');
+                feedback.innerHTML = '💡 Please answer all four questions before submitting.';
+                if (ttsEngine.autoRead) speakText('Please answer all four questions before submitting.');
             } else {
+                studentProfile.inquiryQ1 = answers[0];
+                studentProfile.inquiryQ2 = answers[1];
+                studentProfile.inquiryQ3 = answers[2];
+                studentProfile.inquiryQ4 = answers[3];
                 inquiryFewestTestsComplete = true;
                 feedback.className = 'p-3 text-xs rounded-xl bg-emerald-100 text-emerald-900 font-semibold border border-emerald-300';
                 feedback.innerHTML = '✅ <strong>Answers submitted.</strong> Good scientific thinking! Your teacher can review your explanations.';
@@ -1541,7 +1541,6 @@
             if (btn) { btn.disabled = true; btn.innerText = 'Quiz Submitted 🔒'; btn.classList.add('opacity-60','cursor-not-allowed'); }
             showCustomModal("Quiz Submitted!", `You scored ${score} out of ${quizQuestions.length}. The correct answers are now shown below each question.`, score >= 4 ? "🌟" : "👍");
             
-            submitToGoogleSheets();
             updateReportView();
         }
 
@@ -1560,15 +1559,15 @@
             list.innerHTML = `
                 <div class="flex items-center justify-between p-2 rounded bg-white border border-slate-200">
                     <span>Virtual Lab Observations:</span>
-                    <span class="font-bold ${studentProfile.observationsCorrect ? 'text-emerald-600' : 'text-slate-400'}">${studentProfile.observationsCorrect ? 'Complete ✓' : grp === 'HP' ? '-' : 'Not Completed'}</span>
+                    <span class="font-bold ${studentProfile.observationsCorrect ? 'text-emerald-600' : 'text-slate-400'}">${studentProfile.observationsCorrect ? 'Complete ✓' : grp === 'Honeydew' ? '-' : 'Not Completed'}</span>
                 </div>
                 <div class="flex items-center justify-between p-2 rounded bg-white border border-slate-200">
                     <span>Classification & Conclusion:</span>
-                    <span class="font-bold ${studentProfile.conclusionCorrect ? 'text-emerald-600' : 'text-slate-400'}">${studentProfile.conclusionCorrect ? 'Complete ✓' : grp === 'HP' ? '-' : 'Not Completed'}</span>
+                    <span class="font-bold ${studentProfile.conclusionCorrect ? 'text-emerald-600' : 'text-slate-400'}">${studentProfile.conclusionCorrect ? 'Complete ✓' : grp === 'Honeydew' ? '-' : 'Not Completed'}</span>
                 </div>
                 <div class="flex items-center justify-between p-2 rounded bg-white border border-slate-200">
                     <span>Inquiry Planning Challenge:</span>
-                    <span class="font-bold ${studentProfile.inquiryMastered ? 'text-purple-600' : 'text-slate-400'}">${studentProfile.inquiryMastered ? 'Complete ✓' : grp === 'LP' ? '-' : grp === 'MP' ? '-' : 'Not Completed'}</span>
+                    <span class="font-bold ${studentProfile.inquiryMastered ? 'text-purple-600' : 'text-slate-400'}">${studentProfile.inquiryMastered ? 'Complete ✓' : grp === 'Lemon' ? '-' : grp === 'Mango' ? '-' : 'Not Completed'}</span>
                 </div>
                 <div class="flex items-center justify-between p-2 rounded bg-white border border-slate-200">
                     <span>Concept Quiz Score:</span>
@@ -1577,24 +1576,12 @@
             `;
         }
 
-        function downloadCSVReport() {
-            const data = [
-                ["Student Name", "Class", "Grouping", "Learning Path(s)", "Observations Correct", "Conclusion Correct", "Inquiry Mastered", "Quiz Score", "Timestamp"],
-                [studentProfile.name, studentProfile.studentClass, studentProfile.grouping, studentProfile.track, studentProfile.observationsCorrect, studentProfile.conclusionCorrect, studentProfile.inquiryMastered, studentProfile.quizScore, new Date().toLocaleString()]
-            ];
-
-            let csvContent = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
-            let encodedUri = encodeURI(csvContent);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Magnet_Lab_${studentProfile.name.replace(/\s+/g, '_')}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
         function copyDataToClipboard() {
-            const text = `Student: ${studentProfile.name} (${studentProfile.studentClass}) | Group: ${studentProfile.grouping} | Learning Path(s): ${studentProfile.track} | Observations: ${studentProfile.observationsCorrect} | Conclusion: ${studentProfile.conclusionCorrect} | Quiz: ${studentProfile.quizScore}/5`;
+            const text = `Student: ${studentProfile.name} (${studentProfile.studentClass}) | Group: ${studentProfile.grouping} | 
+            Observations: ${studentProfile.observationsCorrect} | Conclusion: ${studentProfile.conclusionCorrect} | InquiryMastered: ${studentProfile.inquiryMastered} 
+            Q1: ${studentProfile.inquiryQ1} | Q2: ${studentProfile.inquiryQ2} | Q3: ${studentProfile.inquiryQ3} | Q4: ${studentProfile.inquiryQ4} |
+            Quiz: ${studentProfile.quizScore}/5`;
+
             const input = document.createElement('textarea');
             input.value = text;
             document.body.appendChild(input);
@@ -1636,12 +1623,14 @@
                 studentName: studentProfile.name,
                 studentClass: studentProfile.studentClass,
                 grouping: studentProfile.grouping,
-                learningPath: studentProfile.track,
                 observationsCorrect: studentProfile.observationsCorrect,
                 conclusionCorrect: studentProfile.conclusionCorrect,
                 inquiryMastered: studentProfile.inquiryMastered,
-                quizScore: studentProfile.quizScore,
-                aimMastered: studentProfile.observationsCorrect && studentProfile.conclusionCorrect && studentProfile.quizScore >= 3
+                inquiryQ1: studentProfile.inquiryQ1,
+                inquiryQ2: studentProfile.inquiryQ2,
+                inquiryQ3: studentProfile.inquiryQ3,
+                inquiryQ4: studentProfile.inquiryQ4,
+                quizScore: studentProfile.quizScore
             };
 
             if (notice) {
